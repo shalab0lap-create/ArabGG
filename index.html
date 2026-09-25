@@ -4,12 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#11141c">
-  <title>ArabGG — نموذج تجريبي</title>
-  
-  <!-- استدعاء سكريبتات سيرفر جوجل السحابي لجعل كودك أونلاين -->
-  <script src="https://gstatic.com"></script>
-  <script src="https://gstatic.com"></script>
-
+  <title>ArabGG — النسخة الكاملة</title>
   <style>
     :root {
       color-scheme: dark;
@@ -35,14 +30,18 @@
       background: var(--bg);
       color: var(--text);
       font-size: 14px;
+      overflow: hidden;
     }
     button, input, textarea { font: inherit; }
-    button { color: inherit; }
+    button { color: inherit; background: none; border: none; cursor: pointer; }
+    
     .app {
       min-height: 100vh;
       display: grid;
       grid-template-rows: 66px 1fr;
     }
+    
+    /* Topbar */
     .topbar {
       display: flex;
       align-items: center;
@@ -70,8 +69,9 @@
       background: #202838;
       transform: rotate(-4deg);
     }
-    .brand-mark svg { width: 100%; height: 100%; transform: rotate(4deg); }
+    .brand-mark span { display: block; transform: rotate(4deg); color: var(--mint); font-weight: 900; }
     .brand small { color: var(--muted); font-size: 11px; font-weight: 500; }
+    
     .search {
       position: relative;
       width: min(420px, 42vw);
@@ -95,6 +95,7 @@
       color: var(--subtle);
       pointer-events: none;
     }
+    
     .top-actions { display: flex; align-items: center; gap: 10px; }
     .safety-pill, .demo-pill {
       display: inline-flex;
@@ -109,13 +110,18 @@
       font-size: 12px;
     }
     .demo-pill { color: #c7c0ff; background: rgba(169,155,247,.1); border-color: rgba(169,155,247,.17); }
+    
+    /* Layout Structure - تم الحفاظ على التقسيم الرباعي وتأمين توافقه */
     .layout {
       min-height: 0;
       display: grid;
-      grid-template-columns: 72px 236px minmax(320px,1fr) 218px;
+      grid-template-columns: 72px 236px 1fr 218px;
       direction: ltr;
+      height: calc(100vh - 66px);
     }
     .layout > * { direction: rtl; }
+    
+    /* Column 1: Communities */
     .communities {
       display: flex;
       flex-direction: column;
@@ -137,12 +143,10 @@
     .community-list::-webkit-scrollbar { display: none; }
     .community-button {
       width: 46px; height: 46px;
-      border: 0;
       border-radius: 16px;
       display: grid;
       place-items: center;
       background: var(--panel-3);
-      cursor: pointer;
       font-size: 20px;
       position: relative;
       transition: .18s ease;
@@ -158,12 +162,13 @@
       background: var(--mint);
     }
     .community-button.add { color: var(--mint); background: var(--mint-dark); font-size: 24px; }
-    .community-button img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
-    .community-button .avatar-mark, .server-emoji .avatar-mark, .mobile-community-icon .avatar-mark {
+    .community-button .avatar-mark {
       display: grid; width: 100%; height: 100%; place-items: center;
       border-radius: inherit; color: #17211f; font-weight: 800;
     }
     .community-divider { width: 28px; height: 1px; background: var(--line); margin: 2px 0; }
+    
+    /* Column 2: Sidebar */
     .sidebar {
       display: flex;
       flex-direction: column;
@@ -185,8 +190,7 @@
       font-size: 19px;
       overflow: hidden;
     }
-    .server-emoji img { width: 100%; height: 100%; object-fit: cover; }
-    .server-emoji .avatar-mark { font-size: 16px; }
+    .server-emoji .avatar-mark { font-size: 16px; color: var(--text); }
     .server-heading h1 { margin: 0; font-size: 15px; }
     .server-heading p { margin: 4px 0 0; color: var(--muted); font-size: 11px; }
     .private-tag {
@@ -199,17 +203,7 @@
       border-radius: 7px;
       font-size: 10px;
     }
-    .community-policy {
-      display: inline-flex;
-      gap: 5px; align-items: center;
-      margin-top: 6px;
-      padding: 5px 8px;
-      color: #e3d8bb;
-      background: rgba(238,197,142,.075);
-      border-radius: 7px;
-      font-size: 10px;
-    }
-    .channel-list { padding: 12px 10px; overflow: auto; }
+    .channel-list { padding: 12px 10px; overflow-y: auto; flex: 1; }
     .channel-category {
       display: flex;
       align-items: center;
@@ -219,10 +213,7 @@
       font-size: 11px;
       font-weight: 700;
     }
-    .channel-category button {
-      border: 0; background: transparent; color: var(--subtle);
-      font-size: 17px; cursor: pointer;
-    }
+    .channel-category button { font-size: 17px; color: var(--subtle); }
     .channel {
       width: 100%;
       display: flex;
@@ -230,17 +221,15 @@
       gap: 9px;
       padding: 9px 10px;
       margin: 2px 0;
-      border: 0;
       border-radius: 9px;
-      background: transparent;
       color: var(--muted);
       text-align: right;
-      cursor: pointer;
     }
     .channel:hover { background: rgba(255,255,255,.04); color: var(--text); }
     .channel.active { background: rgba(131,226,198,.11); color: var(--mint); }
     .channel .hash { color: var(--subtle); font-size: 16px; }
     .channel.active .hash { color: var(--mint); }
+    
     .voice-card {
       margin: 5px 4px 7px;
       padding: 11px;
@@ -254,16 +243,14 @@
     .voice-card p { color: var(--muted); margin: 6px 0 10px; font-size: 11px; }
     .join-voice {
       width: 100%;
-      border: 0;
       border-radius: 8px;
       padding: 8px;
       color: #152420;
       background: var(--mint);
       font-size: 11px;
       font-weight: 700;
-      cursor: pointer;
     }
-    .join-voice.joined { color: var(--mint); background: var(--mint-dark); }
+    
     .profile {
       margin-top: auto;
       padding: 12px;
@@ -281,72 +268,48 @@
       color: #17211f; background: #f1c58e;
       font-weight: 800;
     }
-
-    /* --- التنسيقات المضافة لربط الشات وجعله متناسقاً تماماً مع كودك المقطوع --- */
+    
+    /* Column 3: Main Chat Content */
     .main-content {
       display: grid;
       grid-template-rows: auto 1fr auto;
-      height: 100%;
       background: var(--bg);
+      min-height: 0;
+      height: 100%;
     }
     .chat-header {
-      padding: 15px 20px;
+      padding: 18px 24px;
       border-bottom: 1px solid var(--line);
+      background: rgba(25, 29, 40, 0.4);
     }
+    .chat-header h2 { margin: 0; font-size: 16px; }
     .chat-messages {
-      padding: 20px;
+      padding: 24px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 16px;
     }
-    .message-bubble {
-      display: flex;
-      gap: 10px;
-    }
-    .msg-user-title {
-      font-weight: 700;
-      color: var(--mint);
-      font-size: 13px;
-    }
-    .msg-user-text {
-      color: var(--text);
-      margin-top: 2px;
-    }
-    .chat-input-area {
-      padding: 15px 20px;
-    }
-    .chat-input-wrapper {
-      display: flex;
-      background: var(--panel-2);
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 6px 12px;
-      align-items: center;
-    }
-    .chat-input-wrapper input {
-      flex: 1;
-      background: transparent;
-      border: none;
-      outline: none;
-      color: var(--text);
-      padding: 4px;
-    }
-    .chat-input-wrapper button {
-      background: var(--mint);
-      color: #11141c;
-      font-weight: 700;
-      padding: 6px 14px;
-      border-radius: 7px;
-      border: none;
-      cursor: pointer;
-    }
+    .message-item { display: flex; gap: 12px; animation: fadeIn 0.15s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    .msg-avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: bold; flex-shrink: 0; color: #111; }
+    .msg-box { display: flex; flex-direction: column; gap: 3px; }
+    .msg-username { font-weight: 700; font-size: 13px; }
+    .msg-text { color: #e2e8f0; line-height: 1.5; }
+    
+    .chat-input-area { padding: 0 24px 24px; background: var(--bg); }
+    .chat-input-wrapper { display: flex; align-items: center; background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 4px 12px; gap: 10px; }
+    .chat-input-wrapper input { flex: 1; height: 44px; background: none; border: none; outline: none; color: var(--text); }
+    .send-button { background: var(--mint); color: #11141c; font-weight: 700; padding: 8px 16px; border-radius: 8px; }
+    .send-button:disabled { opacity: 0.5; cursor: not-allowed; }
+    
+    /* Column 4: Activity Sidebar */
     .activity-sidebar {
       background: var(--panel);
-      padding: 20px;
+      padding: 16px;
+      border-right: 1px solid var(--line);
     }
-  </style>
-</head>
-<body>
-
-  <div class="app">
+    .activity-sidebar h3 { font-size: 12px; color: var(--muted); margin: 0 0 12px 0; }
+    
+    /* --- Auth Modal --- */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 13, 19, 0.85); backdrop-filter: blur(6px); display: grid; place-items: center; z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
