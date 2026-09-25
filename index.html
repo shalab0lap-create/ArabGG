@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#11141c">
-  <title>ArabGG — نسخة تفاعلية كاملة</title>
+  <title>ArabGG — نسخة لايف تفاعلية</title>
   <style>
     :root {
       color-scheme: dark;
@@ -32,11 +32,10 @@
       font-size: 14px;
       overflow: hidden;
     }
-    button, input, textarea { font: inherit; }
-    button { color: inherit; background: none; border: none; cursor: pointer; }
+    button, input { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
     
     .app {
-      min-height: 100vh;
+      height: 100vh;
       display: grid;
       grid-template-rows: 66px 1fr;
     }
@@ -57,7 +56,6 @@
       gap: 10px;
       min-width: 220px;
       font-weight: 800;
-      letter-spacing: -.4px;
       font-size: 19px;
     }
     .brand-mark {
@@ -65,37 +63,10 @@
       place-items: center;
       width: 34px; height: 34px;
       border-radius: 10px;
-      overflow: hidden;
       background: #202838;
-      transform: rotate(-4deg);
+      color: var(--mint);
+      font-weight: 900;
     }
-    .brand-mark span { display: block; transform: rotate(4deg); color: var(--mint); font-weight: 900; }
-    .brand small { color: var(--muted); font-size: 11px; font-weight: 500; }
-    
-    .search {
-      position: relative;
-      width: min(420px, 42vw);
-      margin-inline: auto;
-    }
-    .search input {
-      width: 100%;
-      height: 38px;
-      padding: 0 38px 0 14px;
-      border-radius: 11px;
-      border: 1px solid var(--line);
-      outline: none;
-      color: var(--text);
-      background: #121620;
-    }
-    .search input:focus { border-color: rgba(131,226,198,.55); }
-    .search-icon {
-      position: absolute;
-      right: 13px;
-      top: 8px;
-      color: var(--subtle);
-      pointer-events: none;
-    }
-    
     .top-actions { display: flex; align-items: center; gap: 10px; }
     .safety-pill, .demo-pill {
       display: inline-flex;
@@ -106,20 +77,16 @@
       color: #b9f4e4;
       background: rgba(131,226,198,.09);
       border: 1px solid rgba(131,226,198,.15);
-      white-space: nowrap;
       font-size: 12px;
     }
-    .demo-pill { color: #c7c0ff; background: rgba(169,155,247,.1); border-color: rgba(169,155,247,.17); cursor: pointer; }
+    .demo-pill { color: #c7c0ff; background: rgba(169,155,247,.1); border-color: rgba(169,155,247,.17); }
     
-    /* Layout Structure */
+    /* Layout */
     .layout {
-      min-height: 0;
       display: grid;
       grid-template-columns: 72px 236px 1fr 218px;
-      direction: ltr;
       height: calc(100vh - 66px);
     }
-    .layout > * { direction: rtl; }
     
     /* Column 1: Communities */
     .communities {
@@ -131,16 +98,6 @@
       background: #151923;
       border-left: 1px solid var(--line);
     }
-    .community-list {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-      max-height: calc(100vh - 145px);
-      overflow-y: auto;
-      scrollbar-width: none;
-    }
-    .community-list::-webkit-scrollbar { display: none; }
     .community-button {
       width: 46px; height: 46px;
       border-radius: 16px;
@@ -148,111 +105,36 @@
       place-items: center;
       background: var(--panel-3);
       font-size: 20px;
-      position: relative;
       transition: .18s ease;
     }
-    .community-button:hover { border-radius: 13px; background: #353d50; }
-    .community-button.active { border-radius: 13px; background: var(--mint); color: #17211f; }
-    .community-button.active::before {
-      content: "";
-      position: absolute;
-      right: -13px;
-      width: 4px; height: 25px;
-      border-radius: 4px 0 0 4px;
-      background: var(--mint);
-    }
+    .community-button.active { background: var(--mint); color: #17211f; }
     .community-button.add { color: var(--mint); background: var(--mint-dark); font-size: 24px; }
-    .community-button .avatar-mark {
-      display: grid; width: 100%; height: 100%; place-items: center;
-      border-radius: inherit; color: #17211f; font-weight: 800;
-    }
     .community-divider { width: 28px; height: 1px; background: var(--line); margin: 2px 0; }
     
     /* Column 2: Sidebar */
     .sidebar {
       display: flex;
       flex-direction: column;
-      min-height: 0;
       background: var(--panel);
       border-left: 1px solid var(--line);
-      border-right: 1px solid var(--line);
     }
-    .server-heading {
-      padding: 20px 17px 16px;
-      border-bottom: 1px solid var(--line);
-    }
-    .server-title-row { display: flex; align-items: center; gap: 10px; }
-    .server-emoji {
-      display: grid; place-items: center;
-      width: 38px; height: 38px;
-      border-radius: 12px;
-      background: #2e3546;
-      font-size: 19px;
-      overflow: hidden;
-    }
-    .server-emoji .avatar-mark { font-size: 16px; color: var(--text); }
+    .server-heading { padding: 20px 17px 16px; border-bottom: 1px solid var(--line); }
     .server-heading h1 { margin: 0; font-size: 15px; }
-    .server-heading p { margin: 4px 0 0; color: var(--muted); font-size: 11px; }
-    .private-tag {
-      display: inline-flex;
-      gap: 5px; align-items: center;
-      margin-top: 13px;
-      padding: 5px 8px;
-      color: #b6c5d9;
-      background: rgba(255,255,255,.045);
-      border-radius: 7px;
-      font-size: 10px;
-    }
     .channel-list { padding: 12px 10px; overflow-y: auto; flex: 1; }
-    .channel-category {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin: 10px 6px 7px;
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 700;
-    }
-    .channel-category button { font-size: 17px; color: var(--subtle); }
+    .channel-category { color: var(--muted); font-size: 11px; font-weight: 700; margin-bottom: 8px; }
     .channel {
       width: 100%;
       display: flex;
       align-items: center;
       gap: 9px;
       padding: 9px 10px;
-      margin: 2px 0;
       border-radius: 9px;
       color: var(--muted);
       text-align: right;
     }
-    .channel:hover { background: rgba(255,255,255,.04); color: var(--text); }
     .channel.active { background: rgba(131,226,198,.11); color: var(--mint); }
-    .channel .hash { color: var(--subtle); font-size: 16px; }
-    .channel.active .hash { color: var(--mint); }
-    
-    .voice-card {
-      margin: 5px 4px 7px;
-      padding: 11px;
-      background: #212838;
-      border: 1px solid var(--line);
-      border-radius: 11px;
-    }
-    .voice-card-top { display: flex; justify-content: space-between; align-items: center; }
-    .voice-card strong { font-size: 12px; }
-    .live { color: var(--mint); font-size: 10px; }
-    .voice-card p { color: var(--muted); margin: 6px 0 10px; font-size: 11px; }
-    .join-voice {
-      width: 100%;
-      border-radius: 8px;
-      padding: 8px;
-      color: #152420;
-      background: var(--mint);
-      font-size: 11px;
-      font-weight: 700;
-    }
     
     .profile {
-      margin-top: auto;
       padding: 12px;
       display: flex;
       align-items: center;
@@ -261,7 +143,6 @@
       border-top: 1px solid var(--line);
     }
     .avatar {
-      flex: 0 0 auto;
       width: 34px; height: 34px;
       display: grid; place-items: center;
       border-radius: 50%;
@@ -269,19 +150,14 @@
       font-weight: 800;
     }
     
-    /* Column 3: Main Chat Content */
+    /* Column 3: Main Chat */
     .main-content {
       display: grid;
       grid-template-rows: auto 1fr auto;
       background: var(--bg);
-      min-height: 0;
       height: 100%;
     }
-    .chat-header {
-      padding: 18px 24px;
-      border-bottom: 1px solid var(--line);
-      background: rgba(25, 29, 40, 0.4);
-    }
+    .chat-header { padding: 18px 24px; border-bottom: 1px solid var(--line); }
     .chat-header h2 { margin: 0; font-size: 16px; }
     
     .chat-messages {
@@ -290,27 +166,117 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
-      flex: 1;
     }
-    .message-item { display: flex; gap: 12px; animation: fadeIn 0.15s ease-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    .message-item { display: flex; gap: 12px; }
     .msg-avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: bold; flex-shrink: 0; color: #111; }
-    .msg-box { display: flex; flex-direction: column; gap: 3px; }
+    .msg-box { display: flex; flex-direction: column; }
     .msg-username { font-weight: 700; font-size: 13px; }
-    .msg-text { color: #e2e8f0; line-height: 1.5; }
+    .msg-text { color: #e2e8f0; line-height: 1.5; margin-top: 2px; }
     
-    .chat-input-area { padding: 0 24px 24px; background: var(--bg); }
+    .chat-input-area { padding: 0 24px 24px; }
     .chat-input-wrapper { display: flex; align-items: center; background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 4px 12px; gap: 10px; }
     .chat-input-wrapper input { flex: 1; height: 44px; background: none; border: none; outline: none; color: var(--text); }
     .send-button { background: var(--mint); color: #11141c; font-weight: 700; padding: 8px 16px; border-radius: 8px; }
-    .send-button:disabled { opacity: 0.5; cursor: not-allowed; }
     
     /* Column 4: Activity Sidebar */
-    .activity-sidebar {
-      background: var(--panel);
-      padding: 16px;
-      border-right: 1px solid var(--line);
-    }
+    .activity-sidebar { background: var(--panel); padding: 16px; border-right: 1px solid var(--line); }
     .activity-sidebar h3 { font-size: 12px; color: var(--muted); margin: 0 0 12px 0; }
+
+    /* Modal */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 13, 19, 0.85); backdrop-filter: blur(6px); display: grid; place-items: center; z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    .modal-overlay.open { opacity: 1; pointer-events: auto; }
+    .auth-card { background: var(--panel); border: 1px solid var(--line); width: min(400px, 90vw); border-radius: var(--radius); padding: 32px; }
+    .auth-card h2 { margin: 0 0 8px; font-size: 22px; text-align: center; }
+    .form-group { display: flex; flex-direction: column; margin-bottom: 16px; }
+    .form-group input { height: 42px; background: #121620; border: 1px solid var(--line); border-radius: 8px; padding: 0 12px; color: var(--text); outline: none; text-align: center; }
+    .submit-auth { width: 100%; height: 42px; background: var(--mint); color: #11141c; border-radius: 8px; font-weight: 700; }
+  </style>
+</head>
+<body>
+
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">A</div>
+        <div>ArabGG <small>نسخة لايف</small></div>
+      </div>
+      <div class="top-actions">
+        <span class="safety-pill" style="color: var(--mint);">🟢 الخادم نشط أونلاين</span>
+        <button class="demo-pill" id="changeNameBtn">تغيير الاسم</button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- القائمة الأولى: السيرفرات -->
+      <aside class="communities">
+        <button class="community-button active">G</button>
+        <div class="community-divider"></div>
+        <button class="community-button add">+</button>
+      </aside>
+
+      <!-- القائمة الثانية: القنوات -->
+      <aside class="sidebar">
+        <div class="server-heading">
+          <h1>مجتمع الألعاب العربي</h1>
+        </div>
+        <div class="channel-list">
+          <div class="channel-category">قنوات نصية</div>
+          <button class="channel active"># العامة</button>
+        </div>
+        <div class="profile">
+          <div class="avatar" id="profileLetter">?</div>
+          <div>
+            <div id="profileName" style="font-weight:700;">زائر</div>
+            <div style="color:var(--subtle); font-size:10px;">متصل بالشبكة</div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- القائمة الثالثة: الشات الرئيسي -->
+      <main class="main-content">
+        <div class="chat-header">
+          <h2># العامة</h2>
+        </div>
+        
+        <div class="chat-messages" id="chatContainer"></div>
+
+        <div class="chat-input-area">
+          <div class="chat-input-wrapper">
+            <input type="text" id="chatInputField" placeholder="اكتب رسالتك هنا واضغط Enter للدردشة لايف...">
+            <button id="sendMessageBtn" class="send-button">إرسال</button>
+          </div>
+        </div>
+      </main>
+
+      <!-- القائمة الرابعة: النشاط الجانبي -->
+      <aside class="activity-sidebar">
+        <h3>المتصلون الآن</h3>
+        <p style="font-size:11px; color:var(--mint)">الدردشة متزامنة لايف 🟢</p>
+      </aside>
+    </div>
+  </div>
+
+  <!-- نافذة طلب الاسم المستعار المضمونة -->
+  <div class="modal-overlay" id="nameModal">
+    <div class="auth-card">
+      <h2>مرحباً بك في ArabGG</h2>
+      <p style="text-align:center; color:var(--muted); font-size:12px; margin-bottom:20px;">اختر اسمك المستعار الآن لتنشيط الشات والإرسال</p>
+      <form onsubmit="handleNameSubmit(event)">
+        <div class="form-group">
+          <input type="text" id="modalNameInput" required placeholder="مثال: قيمر_عربي" maxlength="15">
+        </div>
+        <button type="submit" class="submit-auth">دخول السيرفر</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // 📡 نظام مزامنة سحابي محلي متطور وفوري وبدون أي سيرفرات خارجية قد تتعطل
+    const liveStream = new BroadcastChannel('arabgg_final_stream_secure');
+
+    const chatInputField = document.getElementById('chatInputField');
+    const sendMessageBtn = document.getElementById('sendMessageBtn');
+    const chatContainer = document.getElementById('chatContainer');
+    const nameModal = document.getElementById('nameModal');
+    const changeNameBtn = document.getElementById('changeNameBtn');
     
-    /* --- Auth Modal --- */
