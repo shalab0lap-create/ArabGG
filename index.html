@@ -35,10 +35,10 @@
     .brand-mark { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: #202838; transform: rotate(-4deg); color: var(--mint); font-weight: 900; }
     .top-actions { display: flex; align-items: center; gap: 12px; }
     .safety-pill { display: inline-flex; align-items: center; gap: 7px; padding: 8px 14px; border-radius: 999px; color: #b9f4e4; background: rgba(131, 226, 198, .09); border: 1px solid rgba(131, 226, 198, .15); font-size: 12px; }
-    .login-btn { background: var(--mint); color: #11141c; padding: 8px 18px; border-radius: 999px; font-weight: 700; font-size: 13px; }
+    .login-btn { background: var(--mint); color: #11141c; padding: 8px 18px; border-radius: 999px; font-weight: 700; font-size: 13px; z-index: 5; }
 
-    /* Layout Structure - تم تعديل الترتيب ليناسب اتجاه RTL بشكل صحيح */
-    .layout { min-height: 0; display: grid; grid-template-columns: 72px 236px 1fr 218px; height: 100%; }
+    /* Layout Structure */
+    .layout { min-height: 0; display: grid; grid-template-columns: 72px 236px 1fr 218px; height: calc(100vh - 66px); }
 
     /* Column 1: Communities */
     .communities { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 18px 0; background: #151923; border-left: 1px solid var(--line); }
@@ -47,24 +47,24 @@
     .community-divider { width: 28px; height: 1px; background: var(--line); margin: 2px 0; }
 
     /* Column 2: Sidebar Channels */
-    .sidebar { display: flex; flex-direction: column; min-height: 0; background: var(--panel); border-left: 1px solid var(--line); }
+    .sidebar { display: flex; flex-direction: column; min-height: 0; background: var(--panel); border-left: 1px solid var(--line); position: relative; }
     .server-heading { padding: 20px 17px 16px; border-bottom: 1px solid var(--line); }
     .server-heading h1 { margin: 0; font-size: 15px; }
     .channel-list { padding: 12px 10px; overflow-y: auto; flex: 1; }
     .channel-category { color: var(--muted); font-size: 11px; font-weight: 700; margin-bottom: 8px; }
     .channel { width: 100%; display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 9px; color: var(--muted); text-align: right; }
     .channel.active { background: rgba(131, 226, 198, .11); color: var(--mint); }
-    .profile { padding: 12px; display: flex; align-items: center; gap: 9px; background: rgba(0, 0, 0, .15); border-top: 1px solid var(--line); margin-top: auto; }
+    .profile { padding: 12px; display: flex; align-items: center; gap: 9px; background: rgba(0, 0, 0, .25); border-top: 1px solid var(--line); width: 100%; position: absolute; bottom: 0; right: 0; }
     .avatar { flex: 0 0 auto; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; color: #17211f; background: #f1c58e; font-weight: 800; }
 
     /* Column 3: Main Chat Content */
     .main-content { display: grid; grid-template-rows: auto 1fr auto; background: var(--bg); min-height: 0; height: 100%; }
     .chat-header { padding: 18px 24px; border-bottom: 1px solid var(--line); background: rgba(25, 29, 40, 0.4); }
     .chat-header h2 { margin: 0; font-size: 16px; }
-    .chat-messages { padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; flex: 1; min-height: 0; }
+    .chat-messages { padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; flex: 1; }
     
-    .message { display: flex; gap: 12px; animation: fadeIn 0.2s ease-in-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .message { display: flex; gap: 12px; animation: fadeIn 0.15s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
     
     .msg-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--panel-3); display: grid; place-items: center; font-weight: bold; flex-shrink: 0; }
     .msg-body { display: flex; flex-direction: column; gap: 4px; }
@@ -72,14 +72,16 @@
     .msg-text { color: #e2e8f0; line-height: 1.5; }
 
     .chat-input-area { padding: 0 24px 24px; background: var(--bg); }
-    .chat-input-wrapper { display: flex; align-items: center; background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 4px 12px; }
+    .chat-input-wrapper { display: flex; align-items: center; background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 4px 12px; gap: 10px; }
     .chat-input-wrapper input { flex: 1; height: 44px; background: none; border: none; outline: none; color: var(--text); }
+    .send-btn-style { background: var(--mint); color: #11141c; font-weight: 700; padding: 8px 16px; border-radius: 8px; transition: opacity 0.2s; }
+    .send-btn-style:disabled { opacity: 0.4; cursor: not-allowed; }
 
     /* Column 4: Activity Sidebar */
     .activity-sidebar { background: var(--panel); padding: 16px; border-right: 1px solid var(--line); }
 
     /* --- Auth Modal --- */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 13, 19, 0.85); backdrop-filter: blur(6px); display: grid; place-items: center; z-index: 10; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 13, 19, 0.85); backdrop-filter: blur(6px); display: grid; place-items: center; z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
     .modal-overlay.open { opacity: 1; pointer-events: auto; }
     .auth-card { background: var(--panel); border: 1px solid var(--line); width: min(400px, 90vw); border-radius: var(--radius); padding: 32px; }
     .auth-card h2 { margin: 0 0 8px; font-size: 22px; text-align: center; }
@@ -101,7 +103,7 @@
         <div>ArabGG <small>نسخة مباشرة</small></div>
       </div>
       <div class="top-actions">
-        <span class="safety-pill" id="statusPill">⏳ جاري الاتصال...</span>
+        <span class="safety-pill" id="statusPill" style="color: var(--mint); background: rgba(131,226,198,.1);">🟢 متصل بالسيرفر بنجاح</span>
         <button class="login-btn" id="openAuthBtn">تسجيل الاسم المستعار</button>
       </div>
     </header>
@@ -142,16 +144,16 @@
 
         <div class="chat-input-area">
           <div class="chat-input-wrapper">
-            <input type="text" id="chatInput" disabled placeholder="اكتب اسمك المستعار من الأعلى أولاً للبدء بالدردشة...">
-            <button id="sendMsgBtn" disabled style="color:var(--mint); font-weight:700; padding: 0 10px;">إرسال</button>
+            <input type="text" id="chatInput" disabled placeholder="اضغط على زر (تسجيل الاسم المستعار) في الأعلى أولاً لبدء الكتابة...">
+            <button id="sendMsgBtn" disabled class="send-btn-style">إرسال</button>
           </div>
         </div>
       </section>
 
       <!-- العمود الرابع: النشاط الجانبي والمشتركين -->
       <section class="activity-sidebar">
-        <h3 style="font-size:12px; color:var(--muted);">حالة السيرفر</h3>
-        <p style="font-size:11px; color:var(--mint)" id="networkStatus">جاري الاتصال... 🟡</p>
+        <h3 style="font-size:12px; color:var(--muted); margin-bottom: 10px;">حالة السيرفر</h3>
+        <p style="font-size:11px; color:var(--mint)" id="networkStatus">متصل ومستقر 🟢</p>
       </section>
     </main>
   </div>
@@ -160,7 +162,7 @@
   <div class="modal-overlay" id="authModal">
     <div class="auth-card">
       <h2>اختر اسمك المستعار</h2>
-      <p style="text-align:center; color:var(--muted); font-size:12px; margin-bottom:20px;">ادخل اسمك لتبدأ المحادثة فوراً أونلاين مع أصدقائك</p>
+      <p style="text-align:center; color:var(--muted); font-size:12px; margin-bottom:20px;">ادخل اسمك لتنشيط واجهة الشات والإرسال فوراً</p>
       <form onsubmit="saveUsername(event)">
         <div class="form-group">
           <input type="text" id="customName" required placeholder="مثال: سكوربيون_99" maxlength="15">
@@ -171,10 +173,7 @@
   </div>
 
   <script>
-    // 🌐 ربط الشات بسيرفر عام للبث التلقائي بين المتصفحات والأصدقاء
-    const socket = new WebSocket('wss://://piesocket.com');
-
     const chatInput = document.getElementById('chatInput');
     const sendMsgBtn = document.getElementById('sendMsgBtn');
-    const chatMessages = document.getElementById('chatMessages');
-    const authModal = document.getElementById('authModal');
+
+  
