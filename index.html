@@ -77,6 +77,7 @@
       color: #b9f4e4;
       background: rgba(131,226,198,.09);
       border: 1px solid rgba(131,226,198,.15);
+      white-space: nowrap;
       font-size: 12px;
     }
     .demo-pill { color: #c7c0ff; background: rgba(169,155,247,.1); border-color: rgba(169,155,247,.17); }
@@ -271,12 +272,10 @@
   </div>
 
   <script>
-    // 📡 نظام مزامنة سحابي محلي متطور وفوري وبدون أي سيرفرات خارجية قد تتعطل
+    // 📡 نظام المزامنة الفوري والآمن المتوافق مع متصفحات وتحديثات الويب لعام 2026
     const liveStream = new BroadcastChannel('arabgg_final_stream_secure');
 
     const chatInputField = document.getElementById('chatInputField');
     const sendMessageBtn = document.getElementById('sendMessageBtn');
     const chatContainer = document.getElementById('chatContainer');
     const nameModal = document.getElementById('nameModal');
-    const changeNameBtn = document.getElementById('changeNameBtn');
-    
