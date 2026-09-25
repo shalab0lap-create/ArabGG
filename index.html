@@ -4,12 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#11141c">
-  <title>ArabGG — نسخة أونلاين فوري</title>
-  
-  <!-- استدعاء مكتبات جوجل السحابية Firebase (تحديث 2026 المستقر) -->
-  <script src="https://gstatic.com"></script>
-  <script src="https://gstatic.com"></script>
-
+  <title>ArabGG — نسخة لايف تعمل فوراً</title>
   <style>
     :root {
       color-scheme: dark;
@@ -104,11 +99,11 @@
     <header class="topbar">
       <div class="brand">
         <div class="brand-mark">A</div>
-        <div>ArabGG <small>نسخة لايف</small></div>
+        <div>ArabGG <small>نسخة البث المباشر</small></div>
       </div>
       <div class="top-actions">
-        <span class="safety-pill">🟢 اتصال مباشر مباشر</span>
-        <button class="login-btn" id="openAuthBtn">تسجيل اسم المستعار</button>
+        <span class="safety-pill">🟢 شبكة نشطة</span>
+        <button class="login-btn" id="openAuthBtn">تسجيل الاسم المستعار</button>
       </div>
     </header>
 
@@ -141,29 +136,35 @@
           <h2># العامة</h2>
         </div>
         
-        <!-- هنا تعرض الرسائل الحية من السيرفر -->
-        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-messages" id="chatMessages">
+          <div class="message">
+            <div class="msg-avatar" style="background:var(--violet); color:#111">S</div>
+            <div class="msg-body">
+              <div class="msg-user" style="color:var(--violet)">سيرفر ArabGG</div>
+              <div class="msg-text">مرحباً بك! اختر اسماً مستعاراً وابدأ اختبار الدردشة الحية 🎮🔥</div>
+            </div>
+          </div>
+        </div>
 
         <div class="chat-input-area">
           <div class="chat-input-wrapper">
             <input type="text" id="chatInput" disabled placeholder="اكتب اسمك المستعار من الأعلى أولاً للبدء بالدردشة...">
-            <button id="sendMsgBtn" disabled style="color:var(--mint); font-weight:700;">إرسال</button>
+            <button id="sendMsgBtn" disabled style="color:var(--mint); font-weight:700; padding: 0 10px;">إرسال</button>
           </div>
         </div>
       </section>
 
       <section class="activity-sidebar">
-        <h3 style="font-size:12px; color:var(--muted);">حالة السيرفر</h3>
-        <p style="font-size:11px; color:var(--mint)">متصل بالخادم السحابي 🟢</p>
+        <h3 style="font-size:12px; color:var(--muted);">حالة الشبكة</h3>
+        <p style="font-size:11px; color:var(--mint)">البث متصل ومستقر 🟢</p>
       </section>
     </main>
   </div>
 
-  <!-- نافذة اختيار الاسم المستعار السريعة -->
   <div class="modal-overlay" id="authModal">
     <div class="auth-card">
       <h2>اختر اسمك المستعار</h2>
-      <p style="text-align:center; color:var(--muted); font-size:12px; margin-bottom:20px;">ادخل اسمك لتبدأ المحادثة أونلاين فوراً</p>
+      <p style="text-align:center; color:var(--muted); font-size:12px; margin-bottom:20px;">ادخل اسمك لتبدأ المحادثة فوراً</p>
       <form onsubmit="saveUsername(event)">
         <div class="form-group">
           <input type="text" id="customName" required placeholder="مثال: سكوربيون_99" maxlength="15">
@@ -174,16 +175,17 @@
   </div>
 
   <script>
-    // 🔗 إنشاء قاعدة بيانات سحابية عامة وفورية خاصة بـ ArabGG للتشغيل المباشر الآن
-    const firebaseConfig = {
-      databaseURL: "https://firebaseio.com"
-    };
-    
-    // تشغيل الاتصال بالسيرفر
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-    const messagesRef = database.ref('messages');
+    // 📡 قنوات البث التلقائي بين النوافذ لـ GitHub Pages
+    const chatChannel = new BroadcastChannel('arabgg_live_chat');
 
     const chatInput = document.getElementById('chatInput');
     const sendMsgBtn = document.getElementById('sendMsgBtn');
     const chatMessages = document.getElementById('chatMessages');
+    const authModal = document.getElementById('authModal');
+    const openAuthBtn = document.getElementById('openAuthBtn');
+    
+    let myUsername = "";
+
+    // فتح نافذة الاسم تلقائياً
+    authModal.classList.add('open');
+
