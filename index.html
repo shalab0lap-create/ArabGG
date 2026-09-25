@@ -197,6 +197,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      width: 100%;
     }
 
     .channel-item:hover {
@@ -488,6 +489,12 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .user-item:hover {
+      background: #475569;
     }
 
     .online-indicator {
@@ -534,6 +541,18 @@
       max-width: 400px;
       width: 90%;
       box-shadow: 0 20px 25px rgba(0,0,0,0.3);
+      animation: modalSlideIn 0.3s ease;
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
     .modal h2 {
@@ -601,32 +620,5 @@
       background: #475569;
     }
 
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 768px) {
-      .main {
-        grid-template-columns: 1fr;
-      }
-
-      .sidebar, .activity-sidebar {
-        display: none;
-      }
-
-      .message-content {
-        max-width: 85%;
-      }
-    }
-
-    .loading {
-      text-align: center;
-      color: var(--text-muted);
-      padding: 20px;
-    }
-
     .error-message {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid var(--danger);
-      color: #fca5a5;
-      padding: 12px;
-      border-radius: 6px;
-      margin-bottom: 12px;
-      text-align: center;
+      background: rgba(239, 68,
