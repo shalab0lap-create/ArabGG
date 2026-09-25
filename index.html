@@ -1,0 +1,1186 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#11141c">
+  <title>ArabGG — نموذج تجريبي</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #11141c;
+      --panel: #191d28;
+      --panel-2: #202533;
+      --panel-3: #272d3d;
+      --line: rgba(255,255,255,.075);
+      --text: #f2f4fa;
+      --muted: #a0a8ba;
+      --subtle: #727b90;
+      --mint: #83e2c6;
+      --mint-dark: #183b37;
+      --violet: #a99bf7;
+      --danger: #ff8b97;
+      --radius: 16px;
+      font-family: "Noto Sans Arabic", "Segoe UI", Tahoma, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+    }
+    button, input, textarea { font: inherit; }
+    button { color: inherit; }
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: 66px 1fr;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 0 24px;
+      background: rgba(25,29,40,.94);
+      border-bottom: 1px solid var(--line);
+      z-index: 3;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 220px;
+      font-weight: 800;
+      letter-spacing: -.4px;
+      font-size: 19px;
+    }
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 34px; height: 34px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #202838;
+      transform: rotate(-4deg);
+    }
+    .brand-mark svg { width: 100%; height: 100%; transform: rotate(4deg); }
+    .brand small { color: var(--muted); font-size: 11px; font-weight: 500; }
+    .search {
+      position: relative;
+      width: min(420px, 42vw);
+      margin-inline: auto;
+    }
+    .search input {
+      width: 100%;
+      height: 38px;
+      padding: 0 38px 0 14px;
+      border-radius: 11px;
+      border: 1px solid var(--line);
+      outline: none;
+      color: var(--text);
+      background: #121620;
+    }
+    .search input:focus { border-color: rgba(131,226,198,.55); }
+    .search-icon {
+      position: absolute;
+      right: 13px;
+      top: 8px;
+      color: var(--subtle);
+      pointer-events: none;
+    }
+    .top-actions { display: flex; align-items: center; gap: 10px; }
+    .safety-pill, .demo-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 11px;
+      border-radius: 999px;
+      color: #b9f4e4;
+      background: rgba(131,226,198,.09);
+      border: 1px solid rgba(131,226,198,.15);
+      white-space: nowrap;
+      font-size: 12px;
+    }
+    .demo-pill { color: #c7c0ff; background: rgba(169,155,247,.1); border-color: rgba(169,155,247,.17); }
+    .layout {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 72px 236px minmax(320px,1fr) 218px;
+      direction: ltr;
+    }
+    .layout > * { direction: rtl; }
+    .communities {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 0;
+      background: #151923;
+      border-left: 1px solid var(--line);
+    }
+    .community-list {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      max-height: calc(100vh - 145px);
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+    .community-list::-webkit-scrollbar { display: none; }
+    .community-button {
+      width: 46px; height: 46px;
+      border: 0;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: var(--panel-3);
+      cursor: pointer;
+      font-size: 20px;
+      position: relative;
+      transition: .18s ease;
+    }
+    .community-button:hover { border-radius: 13px; background: #353d50; }
+    .community-button.active { border-radius: 13px; background: var(--mint); color: #17211f; }
+    .community-button.active::before {
+      content: "";
+      position: absolute;
+      right: -13px;
+      width: 4px; height: 25px;
+      border-radius: 4px 0 0 4px;
+      background: var(--mint);
+    }
+    .community-button.add { color: var(--mint); background: var(--mint-dark); font-size: 24px; }
+    .community-button img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+    .community-button .avatar-mark, .server-emoji .avatar-mark, .mobile-community-icon .avatar-mark {
+      display: grid; width: 100%; height: 100%; place-items: center;
+      border-radius: inherit; color: #17211f; font-weight: 800;
+    }
+    .community-divider { width: 28px; height: 1px; background: var(--line); margin: 2px 0; }
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      background: var(--panel);
+      border-left: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+    }
+    .server-heading {
+      padding: 20px 17px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    .server-title-row { display: flex; align-items: center; gap: 10px; }
+    .server-emoji {
+      display: grid; place-items: center;
+      width: 38px; height: 38px;
+      border-radius: 12px;
+      background: #2e3546;
+      font-size: 19px;
+      overflow: hidden;
+    }
+    .server-emoji img { width: 100%; height: 100%; object-fit: cover; }
+    .server-emoji .avatar-mark { font-size: 16px; }
+    .server-heading h1 { margin: 0; font-size: 15px; }
+    .server-heading p { margin: 4px 0 0; color: var(--muted); font-size: 11px; }
+    .private-tag {
+      display: inline-flex;
+      gap: 5px; align-items: center;
+      margin-top: 13px;
+      padding: 5px 8px;
+      color: #b6c5d9;
+      background: rgba(255,255,255,.045);
+      border-radius: 7px;
+      font-size: 10px;
+    }
+    .community-policy {
+      display: inline-flex;
+      gap: 5px; align-items: center;
+      margin-top: 6px;
+      padding: 5px 8px;
+      color: #e3d8bb;
+      background: rgba(238,197,142,.075);
+      border-radius: 7px;
+      font-size: 10px;
+    }
+    .channel-list { padding: 12px 10px; overflow: auto; }
+    .channel-category {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 10px 6px 7px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .channel-category button {
+      border: 0; background: transparent; color: var(--subtle);
+      font-size: 17px; cursor: pointer;
+    }
+    .channel {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 10px;
+      margin: 2px 0;
+      border: 0;
+      border-radius: 9px;
+      background: transparent;
+      color: var(--muted);
+      text-align: right;
+      cursor: pointer;
+    }
+    .channel:hover { background: rgba(255,255,255,.04); color: var(--text); }
+    .channel.active { background: rgba(131,226,198,.11); color: var(--mint); }
+    .channel .hash { color: var(--subtle); font-size: 16px; }
+    .channel.active .hash { color: var(--mint); }
+    .voice-card {
+      margin: 5px 4px 7px;
+      padding: 11px;
+      background: #212838;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+    }
+    .voice-card-top { display: flex; justify-content: space-between; align-items: center; }
+    .voice-card strong { font-size: 12px; }
+    .live { color: var(--mint); font-size: 10px; }
+    .voice-card p { color: var(--muted); margin: 6px 0 10px; font-size: 11px; }
+    .join-voice {
+      width: 100%;
+      border: 0;
+      border-radius: 8px;
+      padding: 8px;
+      color: #152420;
+      background: var(--mint);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .join-voice.joined { color: var(--mint); background: var(--mint-dark); }
+    .profile {
+      margin-top: auto;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      background: rgba(0,0,0,.15);
+      border-top: 1px solid var(--line);
+    }
+    .avatar {
+      flex: 0 0 auto;
+      width: 34px; height: 34px;
+      display: grid; place-items: center;
+      border-radius: 50%;
+      color: #17211f; background: #f1c58e;
+      font-weight: 800;
+    }
+    .profile-info { min-width: 0; flex: 1; }
+    .profile-info strong { display: block; font-size: 11px; }
+    .profile-info span { color: var(--muted); font-size: 10px; }
+    .profile .settings { border: 0; background: transparent; color: var(--muted); cursor: pointer; }
+    .chat {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      min-height: 0;
+      background:
+        radial-gradient(ellipse at 44% 0%, rgba(131,226,198,.035), transparent 46%),
+        #11141c;
+    }
+    .chat-header {
+      min-height: 62px;
+      padding: 0 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+    }
+    .chat-title { display: flex; align-items: center; gap: 9px; }
+    .chat-title .hash { color: var(--subtle); font-size: 21px; }
+    .chat-title h2 { margin: 0; font-size: 14px; }
+    .chat-title .topic { color: var(--muted); font-size: 11px; margin-right: 5px; }
+    .header-tools { display: flex; align-items: center; gap: 7px; }
+    .icon-button {
+      width: 34px; height: 34px;
+      display: grid; place-items: center;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .icon-button:hover { background: var(--panel-2); color: var(--text); }
+    .safety-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      margin: 15px 22px 5px;
+      padding: 10px 12px;
+      border: 1px solid rgba(131,226,198,.11);
+      background: rgba(131,226,198,.045);
+      color: #c3d8d4;
+      border-radius: 10px;
+      font-size: 11px;
+      line-height: 1.75;
+    }
+    .safety-note b { color: var(--mint); white-space: nowrap; }
+    .messages {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 12px 22px 20px;
+      scroll-behavior: smooth;
+    }
+    .day-divider {
+      display: flex; align-items: center; gap: 12px;
+      color: var(--subtle); font-size: 10px;
+      margin: 15px 0 22px;
+    }
+    .day-divider::before, .day-divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+    .message {
+      display: flex;
+      gap: 11px;
+      margin: 0 0 19px;
+      position: relative;
+    }
+    .message .avatar { width: 36px; height: 36px; }
+    .avatar.violet { background: #b6a8f5; color: #221b3f; }
+    .avatar.blue { background: #8bbce8; color: #172638; }
+    .avatar.coral { background: #eea28b; color: #3d211d; }
+    .message-content { min-width: 0; }
+    .message-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+    .message-head strong { font-size: 12px; }
+    .message-head time { color: var(--subtle); font-size: 10px; }
+    .message-text { color: #d7dbe5; line-height: 1.8; font-size: 12px; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .message-actions { display: flex; gap: 6px; margin-top: 7px; }
+    .reaction {
+      padding: 3px 7px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.035);
+      color: var(--muted);
+      font-size: 10px;
+      cursor: pointer;
+    }
+    .reaction:hover { border-color: rgba(131,226,198,.45); }
+    .report-button {
+      opacity: 0;
+      margin-right: auto;
+      border: 0;
+      background: transparent;
+      color: var(--subtle);
+      font-size: 10px;
+      cursor: pointer;
+    }
+    .message:hover .report-button, .report-button:focus { opacity: 1; }
+    .composer-wrap { padding: 4px 22px 17px; }
+    .composer {
+      display: flex;
+      align-items: flex-end;
+      gap: 9px;
+      padding: 9px 11px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: #1b202c;
+    }
+    .composer textarea {
+      flex: 1;
+      min-height: 28px;
+      max-height: 100px;
+      resize: none;
+      outline: 0;
+      border: 0;
+      color: var(--text);
+      background: transparent;
+      padding: 5px 2px;
+    }
+    .composer textarea::placeholder { color: #778095; }
+    .send {
+      flex: 0 0 auto;
+      width: 34px; height: 34px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--mint);
+      color: #17211f;
+      cursor: pointer;
+      font-size: 17px;
+    }
+    .composer-hint { margin: 7px 5px 0; color: var(--subtle); font-size: 10px; }
+    .members {
+      min-width: 0;
+      padding: 20px 14px;
+      background: #171b25;
+      border-right: 1px solid var(--line);
+    }
+    .members h3 { margin: 0 0 16px; font-size: 11px; color: var(--muted); }
+    .member-group { margin-bottom: 18px; }
+    .member-group-title { color: var(--subtle); font-size: 10px; margin: 0 4px 9px; }
+    .member {
+      display: flex; align-items: center; gap: 8px;
+      padding: 5px 3px;
+      border-radius: 8px;
+    }
+    .member:hover { background: rgba(255,255,255,.035); }
+    .member .avatar { width: 28px; height: 28px; font-size: 11px; }
+    .member-name { font-size: 11px; color: #d5d9e4; }
+    .online-dot { width: 7px; height: 7px; margin-right: auto; border-radius: 50%; background: var(--mint); }
+    .offline .online-dot { background: #697186; }
+    .invite-card {
+      margin-top: 23px;
+      padding: 13px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: linear-gradient(145deg, #242b3b, #1b202b);
+    }
+    .invite-card .invite-icon { font-size: 19px; }
+    .invite-card strong { display: block; margin-top: 7px; font-size: 11px; }
+    .invite-card p { color: var(--muted); font-size: 10px; line-height: 1.65; margin: 5px 0 10px; }
+    .invite-card button {
+      width: 100%;
+      border: 1px solid rgba(131,226,198,.22);
+      color: var(--mint);
+      background: rgba(131,226,198,.07);
+      border-radius: 8px;
+      padding: 7px;
+      cursor: pointer;
+      font-size: 10px;
+    }
+    .invite-card button:hover { background: rgba(131,226,198,.14); }
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      left: 50%;
+      transform: translate(-50%, 14px);
+      opacity: 0;
+      pointer-events: none;
+      padding: 11px 16px;
+      border: 1px solid rgba(131,226,198,.2);
+      border-radius: 11px;
+      color: var(--text);
+      background: #242c39;
+      box-shadow: 0 8px 30px #0008;
+      z-index: 12;
+      transition: .2s ease;
+      font-size: 12px;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .modal-backdrop {
+      display: none;
+      position: fixed; inset: 0;
+      z-index: 10;
+      place-items: center;
+      padding: 18px;
+      background: rgba(3,5,10,.72);
+      backdrop-filter: blur(5px);
+    }
+    .modal-backdrop.open { display: grid; }
+    .modal {
+      width: min(430px, 100%);
+      max-height: calc(100dvh - 36px);
+      overflow-y: auto;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #1b202c;
+      box-shadow: 0 22px 70px #0009;
+    }
+    .modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    .modal h2 { margin: 0; font-size: 17px; }
+    .modal p { color: var(--muted); font-size: 12px; line-height: 1.7; margin: 7px 0 18px; }
+    .close-modal { border: 0; background: transparent; color: var(--muted); font-size: 20px; cursor: pointer; }
+    .wizard-stepbar { display: flex; align-items: center; gap: 9px; margin: 2px 0 14px; color: var(--muted); font-size: 10px; }
+    .wizard-track { flex: 1; height: 4px; border-radius: 99px; background: #303748; overflow: hidden; }
+    .wizard-progress { width: 50%; height: 100%; border-radius: inherit; background: var(--mint); transition: width .2s ease; }
+    .creation-step[hidden], .step-actions [hidden] { display: none !important; }
+    .step-actions { display: flex; gap: 8px; margin-top: 16px; }
+    .step-next, .step-back {
+      min-height: 40px; padding: 9px 12px;
+      border: 1px solid var(--line); border-radius: 9px;
+      cursor: pointer; font-size: 11px; font-weight: 700;
+    }
+    .step-next { flex: 1; border: 0; color: #17211f; background: var(--mint); }
+    .step-back { color: var(--muted); background: #252c3a; }
+    .field-label { display: block; margin: 13px 0 7px; color: #cbd0dc; font-size: 11px; }
+    .upload-row { display: flex; align-items: center; gap: 11px; }
+    .upload-preview {
+      width: 48px; height: 48px; flex: 0 0 auto;
+      display: grid; place-items: center;
+      overflow: hidden;
+      border: 1px solid var(--line); border-radius: 13px;
+      background: #2e3546; font-size: 22px;
+    }
+    .upload-preview img { width: 100%; height: 100%; object-fit: cover; }
+    .upload-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .upload-button, .remove-image {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px;
+      color: var(--text); background: #252c3a; cursor: pointer; font-size: 10px;
+    }
+    .remove-image { color: var(--muted); }
+    .upload-note { display: block; margin-top: 5px; color: var(--subtle); font-size: 9px; }
+    .avatar-preview-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .avatar-preview-row .upload-preview { width: 54px; height: 54px; font-size: 22px; }
+    .avatar-mode-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px; }
+    .avatar-mode-option {
+      padding: 8px 5px; border: 1px solid var(--line); border-radius: 8px;
+      color: var(--muted); background: #202634; cursor: pointer; font-size: 10px;
+    }
+    .avatar-mode-option.selected { color: var(--mint); border-color: rgba(131,226,198,.6); background: rgba(131,226,198,.08); }
+    .avatar-panel { padding: 10px; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.02); }
+    .avatar-panel-title { display: block; margin-bottom: 8px; color: var(--muted); font-size: 10px; }
+    .emoji-options, .avatar-colors { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+    .emoji-option {
+      display: grid; width: 31px; height: 31px; place-items: center;
+      border: 1px solid var(--line); border-radius: 8px; background: #252c3a;
+      font-size: 16px; cursor: pointer;
+    }
+    .emoji-option.selected { border-color: var(--mint); background: rgba(131,226,198,.13); }
+    .avatar-colors { margin-top: 9px; }
+    .avatar-color-option {
+      width: 22px; height: 22px; padding: 0;
+      border: 2px solid transparent; border-radius: 50%;
+      background: var(--swatch); cursor: pointer;
+    }
+    .avatar-color-option.selected { border-color: #fff; box-shadow: 0 0 0 2px var(--panel-3); }
+    .avatar-panel[hidden] { display: none !important; }
+    .avatar-upload-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .avatar-upload-note { margin-top: 7px; color: var(--subtle); font-size: 9px; line-height: 1.6; }
+    .mobile-community-icon { width: 38px; height: 38px; flex: 0 0 auto; display: grid; place-items: center; overflow: hidden; border-radius: 11px; background: #2e3546; }
+    .mobile-community-icon img { width: 100%; height: 100%; object-fit: cover; }
+    .modal input {
+      width: 100%; height: 40px;
+      border: 1px solid var(--line); border-radius: 9px;
+      outline: none; padding: 0 11px;
+      background: #121620; color: var(--text);
+    }
+    .modal input:focus { border-color: rgba(131,226,198,.5); }
+    .template-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .template-option {
+      text-align: right; padding: 11px;
+      border: 1px solid var(--line); border-radius: 10px;
+      background: #202634; cursor: pointer;
+    }
+    .template-option.selected { border-color: var(--mint); background: rgba(131,226,198,.08); }
+    .template-option span { display: block; font-size: 17px; margin-bottom: 5px; }
+    .template-option strong { font-size: 11px; }
+    .template-option small { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; }
+    .music-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .music-option {
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      color: var(--muted);
+      background: #202634;
+      cursor: pointer;
+      font-size: 11px;
+    }
+    .music-option.selected { color: var(--mint); border-color: rgba(131,226,198,.6); background: rgba(131,226,198,.08); }
+    .privacy-hint { margin-top: 13px; padding: 10px; border-radius: 9px; color: #c0d7d1; background: rgba(131,226,198,.055); font-size: 10px; line-height: 1.7; }
+    .content-rules { margin-top: 9px; padding: 10px; border-radius: 9px; color: #dfd6c3; background: rgba(238,197,142,.07); font-size: 10px; line-height: 1.8; }
+    .modal-submit {
+      width: 100%; margin-top: 15px; padding: 10px;
+      border: 0; border-radius: 9px;
+      color: #17211f; background: var(--mint);
+      font-weight: 800; cursor: pointer;
+    }
+    .empty-state { padding: 35px 15px; text-align: center; color: var(--muted); font-size: 12px; }
+    .empty-state strong { display: block; color: var(--text); margin-bottom: 6px; }
+    @media (max-width: 1050px) {
+      .layout { grid-template-columns: 64px 210px minmax(300px,1fr); }
+      .members { display: none; }
+      .brand { min-width: 180px; }
+    }
+    @media (max-width: 700px) {
+      .app { grid-template-rows: 58px 1fr; height: 100dvh; }
+      .topbar { padding: 0 12px; gap: 10px; }
+      .brand { min-width: auto; font-size: 16px; }
+      .brand small, .demo-pill { display: none; }
+      .brand-mark { width: 31px; height: 31px; }
+      .search { width: auto; flex: 1; }
+      .search input { height: 35px; }
+      .safety-pill { padding: 7px 8px; font-size: 10px; }
+      .layout { grid-template-columns: 56px 1fr; grid-template-rows: 1fr; }
+      .communities { grid-column: 1; grid-row: 1; gap: 9px; }
+      .community-button { width: 40px; height: 40px; border-radius: 13px; font-size: 18px; }
+      .sidebar { grid-column: 2; grid-row: 1; min-width: 0; }
+      .chat { display: none; grid-column: 2; grid-row: 1; }
+      .layout.chat-open .sidebar { display: none; }
+      .layout.chat-open .chat { display: flex; }
+      .mobile-back { display: grid !important; }
+      .chat-header { min-height: 56px; padding: 0 12px; }
+      .chat-title .topic, .header-tools .optional { display: none; }
+      .safety-note { margin: 10px 10px 3px; font-size: 10px; }
+      .messages { padding: 10px 12px; }
+      .composer-wrap { padding: 3px 10px 10px; }
+      .mobile-community-open {
+        width: 100%; padding: 14px; margin-bottom: 7px;
+        display: flex; align-items: center; gap: 11px;
+        background: #202634; border: 1px solid var(--line);
+        border-radius: 11px; color: var(--text); text-align: right; cursor: pointer;
+      }
+      .mobile-community-open span { font-size: 19px; }
+      .mobile-community-open strong { display: block; font-size: 12px; }
+      .mobile-community-open small { display: block; color: var(--muted); font-size: 10px; margin-top: 3px; }
+    }
+    @media (min-width: 701px) { .mobile-back, .mobile-community-open { display: none !important; } }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 132 132" xmlns="http://www.w3.org/2000/svg"><rect width="132" height="132" rx="36" fill="#202838"/><path d="M78 20h25a14 14 0 0 1 14 14v15a14 14 0 0 1-14 14h-7l-12 10v-10h-6a14 14 0 0 1-14-14V34a14 14 0 0 1 14-14Z" fill="#A99BF7"/><circle cx="83" cy="41.5" r="3" fill="#211D3A"/><circle cx="94" cy="41.5" r="3" fill="#211D3A"/><circle cx="105" cy="41.5" r="3" fill="#211D3A"/><path d="M28 39h52a18 18 0 0 1 18 18v22a18 18 0 0 1-18 18H55L36 113V97h-8a18 18 0 0 1-18-18V57a18 18 0 0 1 18-18Z" fill="#83E2C6"/><path d="M39 59h29c9 0 16 6 18 15l3 14c1 6-6 9-10 4l-8-9H46l-8 9c-4 5-11 2-10-4l3-14c2-9 9-15 18-15Z" fill="#202838"/><path d="M47 68v12M41 74h12" stroke="#83E2C6" stroke-width="4" stroke-linecap="round"/><circle cx="68" cy="71" r="2.8" fill="#83E2C6"/><circle cx="76" cy="78" r="2.8" fill="#83E2C6"/></svg></span><span><bdi dir="ltr">ArabGG</bdi> <small>مجتمعاتك بالعربي</small></span></div>
+      <label class="search">
+        <span class="search-icon">⌕</span>
+        <input id="searchInput" type="search" placeholder="ابحث في هذه القناة…" aria-label="ابحث في الرسائل">
+      </label>
+      <div class="top-actions">
+        <span class="safety-pill">◈ إعدادات آمنة</span>
+        <span class="demo-pill">نسخة تجريبية</span>
+      </div>
+    </header>
+    <main class="layout" id="layout">
+      <nav class="communities" aria-label="المجتمعات">
+        <div class="community-list" id="communityList"></div>
+        <div class="community-divider"></div>
+        <button class="community-button add" id="openCreate" title="إنشاء مجتمع">+</button>
+      </nav>
+      <aside class="sidebar">
+        <button class="mobile-community-open" id="mobileOpenCommunity"><span class="mobile-community-icon">🎮</span><span><strong>مخيم اللاعبين</strong><small>افتح المجتمع الحالي</small></span></button>
+        <section class="server-heading">
+          <div class="server-title-row">
+            <div class="server-emoji" id="serverEmoji">🎮</div>
+            <div><h1 id="serverName">مخيم اللاعبين</h1><p id="serverMeta">١٢ عضوًا · ألعاب</p></div>
+          </div>
+          <span class="private-tag">◉ خاص بالدعوة</span>
+          <span class="community-policy" id="musicPolicyTag">🎵 سياسة الموسيقى يحددها صاحب المجتمع</span>
+        </section>
+        <div class="channel-list" id="channelList"></div>
+        <div class="profile">
+          <div class="avatar">س</div>
+          <div class="profile-info"><strong>سامي التجريبي</strong><span>حساب للعرض فقط</span></div>
+          <button class="settings" id="settingsButton" aria-label="إعدادات السلامة">⚙</button>
+        </div>
+      </aside>
+      <section class="chat" aria-label="المحادثة">
+        <header class="chat-header">
+          <div class="chat-title">
+            <button class="icon-button mobile-back" id="mobileBack" aria-label="العودة">→</button>
+            <span class="hash">#</span><h2 id="channelTitle">العام</h2>
+            <span class="topic" id="channelTopic">دردشة خفيفة بين أعضاء المجتمع</span>
+          </div>
+          <div class="header-tools">
+            <button class="icon-button optional" id="inviteButton" title="دعوة عضو">♧</button>
+            <button class="icon-button" id="membersButton" title="الأعضاء">♙</button>
+            <button class="icon-button" id="helpButton" title="معلومات السلامة">ⓘ</button>
+          </div>
+        </header>
+        <div class="safety-note"><b>مساحة خاصة</b><span>لا تظهر للعامة. لا تشارك اسمك الكامل أو موقعك، وأبلغ المشرف عن أي تواصل يزعجك.</span></div>
+        <div class="messages" id="messages" aria-live="polite"></div>
+        <div class="composer-wrap">
+          <form class="composer" id="messageForm">
+            <textarea id="messageInput" rows="1" placeholder="اكتب رسالة في #العام…" aria-label="اكتب رسالة"></textarea>
+            <button class="send" type="submit" aria-label="إرسال">↑</button>
+          </form>
+          <div class="composer-hint">نموذج تجريبي — الرسائل تظهر لك فقط ولا تُرسل إلى مستخدمين آخرين.</div>
+        </div>
+      </section>
+      <aside class="members">
+        <h3 id="memberHeading">الأعضاء — ٤</h3>
+        <div id="memberList"></div>
+        <div class="invite-card">
+          <div class="invite-icon">✳</div>
+          <strong>مجتمع خاص وآمن</strong>
+          <p>ادعُ أشخاصًا تعرفهم. الرسائل الخاصة من الغرباء غير مفعّلة في هذا النموذج.</p>
+          <button id="inviteCardButton">نسخ رابط دعوة تجريبي</button>
+        </div>
+      </aside>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <div class="modal-backdrop" id="createModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modal-head">
+        <div><h2 id="modalTitle">أنشئ مجتمعك</h2><p id="createModalIntro">اختر اسمًا ونوعًا، ثم خصص صورة المجتمع في صفحة مستقلة.</p></div>
+        <button class="close-modal" id="closeCreate" aria-label="إغلاق">×</button>
+      </div>
+      <div class="wizard-stepbar">
+        <span id="createStepLabel">الخطوة ١ من ٢</span>
+        <div class="wizard-track"><div class="wizard-progress" id="createStepProgress"></div></div>
+      </div>
+      <section class="creation-step" id="communityDetailsStep">
+        <label class="field-label" for="newCommunityName">اسم المجتمع</label>
+        <input id="newCommunityName" maxlength="32" placeholder="مثال: فريقنا أو مجموعة الكيمياء">
+        <span class="field-label">اختر نوع المجتمع</span>
+        <div class="template-options">
+          <button class="template-option selected" data-template="gaming"><span>🎮</span><strong>ألعاب</strong><small>فرق واستراتيجيات</small></button>
+          <button class="template-option" data-template="study"><span>📚</span><strong>دراسة</strong><small>مواد ومجموعات مذاكرة</small></button>
+          <button class="template-option" data-template="technology"><span>💻</span><strong>تقنية وبرمجة</strong><small>أسئلة ومشاريع</small></button>
+          <button class="template-option" data-template="sports"><span>⚽</span><strong>رياضة</strong><small>فرق ونقاشات رياضية</small></button>
+          <button class="template-option" data-template="reading"><span>📖</span><strong>قراءة ولغات</strong><small>كتب وتعلّم اللغات</small></button>
+          <button class="template-option" data-template="quran"><span>🌙</span><strong>قرآن وتعلّم نافع</strong><small>تلاوة وأسئلة بإشراف</small></button>
+          <button class="template-option" data-template="hobbies"><span>🧩</span><strong>هوايات وإبداع</strong><small>أفكار ومشاريع يدوية</small></button>
+          <button class="template-option" data-template="volunteering"><span>🤝</span><strong>تطوع ومبادرات</strong><small>تنظيم أعمال نافعة</small></button>
+          <button class="template-option" data-template="other"><span>🌐</span><strong>شيء آخر</strong><small>قنوات عامة لأي اهتمام</small></button>
+        </div>
+        <span class="field-label">سياسة الموسيقى في هذا المجتمع</span>
+        <div class="music-options">
+          <button class="music-option" type="button" data-music-policy="allowed">🎵 مسموحة</button>
+          <button class="music-option" type="button" data-music-policy="banned">🔇 ممنوعة</button>
+        </div>
+        <div class="privacy-hint">🔒 المجتمع الجديد خاص بالدعوة في هذا النموذج. لا يوجد بحث عام عن الأعضاء.</div>
+        <div class="content-rules"><strong>قواعد مقترحة:</strong> منع المحتوى الجنسي، المواعدة، القمار، الكحول والمخدرات، والتنمر والتحرش. يحدد صاحب كل مجتمع سياسة الموسيقى الخاصة به. هذه معاينة للقواعد فقط؛ النموذج لا يفلتر الرسائل فعليًا.</div>
+      </section>
+      <section class="creation-step" id="communityAvatarStep" hidden>
+        <span class="field-label">صورة المجتمع</span>
+        <div class="avatar-preview-row">
+          <div class="upload-preview" id="uploadPreview">🎮</div>
+          <span class="upload-note" id="avatarPreviewNote">الإيموجي واللون يظهران كأيقونة للمجتمع.</span>
+        </div>
+        <div class="avatar-mode-options" aria-label="طريقة صورة المجتمع">
+          <button class="avatar-mode-option selected" type="button" data-avatar-mode="emoji">إيموجي + لون</button>
+          <button class="avatar-mode-option" type="button" data-avatar-mode="initials">حروف الاسم</button>
+          <button class="avatar-mode-option" type="button" data-avatar-mode="upload">رفع صورة</button>
+        </div>
+        <div class="avatar-panel" id="emojiAvatarPanel">
+          <span class="avatar-panel-title">اختر رمزًا ولونًا</span>
+          <div class="emoji-options">
+            <button class="emoji-option selected" type="button" data-avatar-emoji="🎮" aria-label="ألعاب">🎮</button>
+            <button class="emoji-option" type="button" data-avatar-emoji="📚" aria-label="كتب">📚</button>
+            <button class="emoji-option" type="button" data-avatar-emoji="💻" aria-label="تقنية">💻</button>
+            <button class="emoji-option" type="button" data-avatar-emoji="⚽" aria-label="رياضة">⚽</button>
+            <button class="emoji-option" type="button" data-avatar-emoji="📖" aria-label="قراءة">📖</button>
+            <button class="emoji-option" type="button" data-avatar-emoji="🌙" aria-label="هلال">🌙</button>
+            <button class="emoji-option" type="button" data-avatar-emoji="🧩" aria-label="هوايات">🧩</button>
+            <button class="emoji-option" type="button" data-avatar-emoji="🤝" aria-label="تطوع">🤝</button>
+            <button class="emoji-option" type="button" data-avatar-emoji="🌐" aria-label="عام">🌐</button>
+          </div>
+          <div class="avatar-colors" aria-label="لون الخلفية">
+            <button class="avatar-color-option selected" type="button" data-avatar-color="mint" style="--swatch:#83e2c6" aria-label="نعناعي"></button>
+            <button class="avatar-color-option" type="button" data-avatar-color="violet" style="--swatch:#a99bf7" aria-label="بنفسجي"></button>
+            <button class="avatar-color-option" type="button" data-avatar-color="blue" style="--swatch:#8bbce8" aria-label="أزرق"></button>
+            <button class="avatar-color-option" type="button" data-avatar-color="gold" style="--swatch:#f1c58e" aria-label="ذهبي"></button>
+            <button class="avatar-color-option" type="button" data-avatar-color="coral" style="--swatch:#eea28b" aria-label="مرجاني"></button>
+            <button class="avatar-color-option" type="button" data-avatar-color="teal" style="--swatch:#94d8d5" aria-label="تركوازي"></button>
+          </div>
+        </div>
+        <div class="avatar-panel" id="initialsAvatarPanel" hidden>
+          <span class="avatar-panel-title">ستظهر أول حرفين من اسم المجتمع</span>
+          <div class="avatar-colors" aria-label="لون الشارة">
+            <button class="avatar-color-option selected" type="button" data-avatar-color="mint" style="--swatch:#83e2c6" aria-label="نعناعي"></button>
+            <button class="avatar-color-option" type="button" data-avatar-color="violet" style="--swatch:#a99bf7" aria-label="بنفسجي"></button>
+            <button class="avatar-color-option" type="button" data-avatar-color="blue" style="--swatch:#8bbce8" aria-label="أزرق"></button>
+            <button class="avatar-color-option" type="button" data-avatar-color="gold" style="--swatch:#f1c58e" aria-label="ذهبي"></button>
+            <button class="avatar-color-option" type="button" data-avatar-color="coral" style="--swatch:#eea28b" aria-label="مرجاني"></button>
+            <button class="avatar-color-option" type="button" data-avatar-color="teal" style="--swatch:#94d8d5" aria-label="تركوازي"></button>
+          </div>
+        </div>
+        <div class="avatar-panel" id="uploadAvatarPanel" hidden>
+          <div class="avatar-upload-actions">
+            <label class="upload-button" for="communityImageInput">اختر صورة من جهازك</label>
+            <button class="remove-image" id="removeCommunityImage" type="button">إزالة الصورة</button>
+          </div>
+          <div class="avatar-upload-note">PNG أو JPG أو WebP — حتى 3MB. تبقى محلية في هذه المعاينة.</div>
+          <input id="communityImageInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+        </div>
+      </div>
+      <div class="step-actions">
+        <button class="step-back" id="previousCreateStep" type="button" hidden>رجوع</button>
+        <button class="step-next" id="nextCreateStep" type="button">التالي: صورة المجتمع ←</button>
+        <button class="modal-submit" id="createCommunityButton" type="button" hidden>إنشاء تجريبي</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    const communities = {
+      gaming: {
+        name: "مخيم اللاعبين", emoji: "🎮", meta: "١٢ عضوًا · ألعاب",
+        categories: [
+          { title: "البداية", channels: [{id:"عام",name:"العام",topic:"دردشة خفيفة بين أعضاء المجتمع"},{id:"إعلانات",name:"إعلانات",topic:"آخر أخبار الفريق"}] },
+          { title: "اللعب الجماعي", channels: [{id:"ابحث-عن-فريق",name:"ابحث عن فريق",topic:"كوّن فريقك للعب"},{id:"استراتيجيات",name:"استراتيجيات",topic:"شارك خططك ونصائحك"}] }
+        ],
+        voice: "غرفة الفريق", count: "٤",
+        members: [
+          {name:"نورة", initial:"ن", color:"violet", group:"متصلون الآن"},
+          {name:"مازن", initial:"م", color:"blue", group:"متصلون الآن"},
+          {name:"ليان", initial:"ل", color:"coral", group:"متصلون الآن"},
+          {name:"سامي", initial:"س", color:"", group:"متصلون الآن"}
+        ]
+      },
+      study: {
+        name: "مساحة الدراسة", emoji: "📚", meta: "٨ أعضاء · دراسة",
+        categories: [
+          { title: "المجتمع", channels: [{id:"عام",name:"العام",topic:"أهلًا بكم في مساحة الدراسة"},{id:"الأسئلة",name:"الأسئلة",topic:"اسألوا بعضكم باحترام"}] },
+          { title: "المواد", channels: [{id:"رياضيات",name:"رياضيات",topic:"مسائل وأفكار الرياضيات"},{id:"علوم",name:"علوم",topic:"ملاحظات ومراجع العلوم"}] }
+        ],
+        voice: "غرفة المذاكرة", count: "٣",
+        members: [
+          {name:"جود", initial:"ج", color:"violet", group:"متصلون الآن"},
+          {name:"راكان", initial:"ر", color:"blue", group:"متصلون الآن"},
+          {name:"سامي", initial:"س", color:"", group:"متصلون الآن"}
+        ]
+      }
+    };
+    const communityTemplates = {
+      gaming: { label:"ألعاب",emoji:"🎮",voice:"غرفة الفريق",categories:[
+        {title:"البداية",channels:[{id:"عام",name:"العام",topic:"دردشة أعضاء المجتمع"},{id:"إعلانات",name:"إعلانات",topic:"أخبار المجتمع"}]},
+        {title:"اللعب الجماعي",channels:[{id:"ابحث-عن-فريق",name:"ابحث عن فريق",topic:"كوّن فريقًا للعب"},{id:"استراتيجيات",name:"استراتيجيات",topic:"نصائح وخطط اللعب"}]}
+      ]},
+      study: { label:"دراسة",emoji:"📚",voice:"غرفة المذاكرة",categories:[
+        {title:"المجتمع",channels:[{id:"عام",name:"العام",topic:"أهلًا بكم في مجموعة الدراسة"},{id:"الأسئلة",name:"الأسئلة",topic:"اسألوا وتعلموا معًا"}]},
+        {title:"المواد",channels:[{id:"المواد",name:"المواد",topic:"نقاش المواد والمراجع"},{id:"جلسات-المذاكرة",name:"جلسات المذاكرة",topic:"تنظيم جلسات دراسة جماعية"}]}
+      ]},
+      technology: { label:"تقنية",emoji:"💻",voice:"غرفة النقاش",categories:[
+        {title:"المجتمع",channels:[{id:"عام",name:"العام",topic:"نقاش التقنية"},{id:"أسئلة-تقنية",name:"أسئلة تقنية",topic:"اطرح أسئلتك التقنية"}]},
+        {title:"المشاريع",channels:[{id:"أفكار",name:"أفكار",topic:"شارك أفكار المشاريع"},{id:"مساعدة",name:"مساعدة",topic:"تعاون وتبادل خبرات"}]}
+      ]},
+      sports: { label:"رياضة",emoji:"⚽",voice:"استراحة الفريق",categories:[
+        {title:"المجتمع",channels:[{id:"عام",name:"العام",topic:"نقاش رياضي باحترام"},{id:"الأخبار",name:"الأخبار",topic:"أخبار ونتائج الرياضة"}]},
+        {title:"النشاط",channels:[{id:"التمارين",name:"التمارين",topic:"تبادل أفكار التمارين"},{id:"الفرق",name:"الفرق",topic:"تنظيم أنشطة الفريق"}]}
+      ]},
+      reading: { label:"قراءة ولغات",emoji:"📖",voice:"نادي القراءة",categories:[
+        {title:"المجتمع",channels:[{id:"عام",name:"العام",topic:"أهلًا بمحبي القراءة والتعلّم"},{id:"ترشيحات",name:"ترشيحات",topic:"كتب وموارد مفيدة"}]},
+        {title:"التعلّم",channels:[{id:"القراءة",name:"القراءة",topic:"نقاشات الكتب"},{id:"اللغات",name:"اللغات",topic:"تدرّبوا على اللغات معًا"}]}
+      ]},
+      quran: { label:"قرآن وتعلّم نافع",emoji:"🌙",voice:"مجلس التعلّم",categories:[
+        {title:"المجتمع",channels:[{id:"عام",name:"العام",topic:"مجتمع للتعلّم النافع"},{id:"أسئلة",name:"أسئلة",topic:"أسئلة بأدب واحترام"}]},
+        {title:"التعلّم",channels:[{id:"تلاوة",name:"تلاوة",topic:"مراجعة التلاوة بإشراف مناسب"},{id:"موارد",name:"موارد",topic:"مشاركة مصادر نافعة"}]}
+      ]},
+      hobbies: { label:"هوايات وإبداع",emoji:"🧩",voice:"مساحة الأفكار",categories:[
+        {title:"المجتمع",channels:[{id:"عام",name:"العام",topic:"تعارف حول الهوايات"},{id:"أعمال-الأعضاء",name:"أعمال الأعضاء",topic:"شاركوا مشاريعكم"}]},
+        {title:"الهوايات",channels:[{id:"أفكار",name:"أفكار",topic:"أفكار وتجارب جديدة"},{id:"مساعدة",name:"مساعدة",topic:"تبادل النصائح"}]}
+      ]},
+      volunteering: { label:"تطوع ومبادرات",emoji:"🤝",voice:"غرفة التخطيط",categories:[
+        {title:"المجتمع",channels:[{id:"عام",name:"العام",topic:"مبادرات وأفكار تطوعية"},{id:"إعلانات",name:"إعلانات",topic:"آخر أخبار المجموعة"}]},
+        {title:"التنظيم",channels:[{id:"فرص",name:"فرص تطوع",topic:"مشاركة فرص موثوقة"},{id:"مشاريع",name:"المشاريع",topic:"تنسيق المبادرات"}]}
+      ]},
+      other: { label:"اهتمام عام",emoji:"🌐",voice:"غرفة المجتمع",categories:[
+        {title:"البداية",channels:[{id:"عام",name:"العام",topic:"ابدأ التعارف حول اهتمام المجتمع"},{id:"إعلانات",name:"إعلانات",topic:"تحديثات المجتمع"}]},
+        {title:"النقاش",channels:[{id:"نقاشات",name:"نقاشات",topic:"نقاشات حول موضوع المجتمع"},{id:"اقتراحات",name:"اقتراحات",topic:"اقترح قنوات أو فعاليات جديدة"}]}
+      ]}
+    };
+    const messagesByCommunity = {
+      gaming: {
+        "عام": [
+          {name:"نورة",initial:"ن",color:"violet",time:"٤:١٢ م",text:"يا هلا بالجميع! مين متحمس للجولة اليوم؟",reaction:"✨ ٢"},
+          {name:"مازن",initial:"م",color:"blue",time:"٤:١٥ م",text:"أنا جاهز بعد المغرب 🎮"},
+          {name:"ليان",initial:"ل",color:"coral",time:"٤:١٨ م",text:"خلونا نتفق على اللعبة والوقت هنا، وبعدها ندخل غرفة الفريق."}
+        ],
+        "إعلانات": [{name:"نورة",initial:"ن",color:"violet",time:"٣:٤٠ م",text:"تذكير: نلتزم بقواعد المجتمع ونستخدم الإبلاغ إذا صار شيء مزعج."}],
+        "ابحث-عن-فريق": [{name:"مازن",initial:"م",color:"blue",time:"٢:٣٥ م",text:"أبحث عن لاعبين للجولة القادمة — اكتبوا هنا بدل مشاركة معلومات التواصل الشخصية."}],
+        "استراتيجيات": [{name:"ليان",initial:"ل",color:"coral",time:"١:٠٨ م",text:"إذا عندكم نصائح للفريق شاركوها هنا، بدون روابط مجهولة."}]
+      },
+      study: {
+        "عام": [
+          {name:"جود",initial:"ج",color:"violet",time:"٤:٠٢ م",text:"أهلًا! بنذاكر فصل الطاقة اليوم. حطوا أسئلتكم في قناة المادة المناسبة 📚"},
+          {name:"راكان",initial:"ر",color:"blue",time:"٤:٠٧ م",text:"ممتاز، جهزت ملخصًا قصيرًا وبثبته بعد ما نراجعه سوا."},
+          {name:"سامي",initial:"س",color:"",time:"٤:١٠ م",text:"خلونا نستخدم غرفة المذاكرة وقت الجلسة ونخلي الأسئلة هنا."}
+        ],
+        "الأسئلة": [{name:"جود",initial:"ج",color:"violet",time:"٣:٥٨ م",text:"اكتبوا السؤال مع اسم الدرس عشان يسهل على المجموعة المساعدة."}],
+        "رياضيات": [{name:"راكان",initial:"ر",color:"blue",time:"٣:٤٣ م",text:"بدأت بمراجعة المعادلات. مين يبي يحل مثالًا مع المجموعة؟"}],
+        "علوم": [{name:"جود",initial:"ج",color:"violet",time:"٣:١٦ م",text:"أضفت سؤال مراجعة عن الطاقة. اشرحوا خطوات الحل لبعضكم."}]
+      }
+    };
+    let activeCommunity = "gaming";
+    let activeChannel = "عام";
+    let selectedTemplate = "gaming";
+    let selectedMusicPolicy = "";
+    let selectedCommunityImage = "";
+    let selectedAvatarMode = "emoji";
+    let selectedAvatarEmoji = "🎮";
+    let selectedAvatarColor = "mint";
+    let createStep = 1;
+    let createdCommunityCount = 0;
+    let toastTimer;
+    const $ = (selector, root=document) => root.querySelector(selector);
+    const escapeHTML = (value) => String(value).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+    const avatarColors = {mint:"#83e2c6",violet:"#a99bf7",blue:"#8bbce8",gold:"#f1c58e",coral:"#eea28b",teal:"#94d8d5"};
+
+    function initialsForName(name) {
+      const words = String(name || "").trim().split(/\s+/).filter(Boolean);
+      if (!words.length) return "؟";
+      if (words.length > 1) return words.slice(0, 2).map(word => Array.from(word)[0]).join("");
+      return Array.from(words[0]).slice(0, 2).join("");
+    }
+    function communityAvatarHTML(community) {
+      if (community.image) return `<img src="${escapeHTML(community.image)}" alt="">`;
+      const color = avatarColors[community.avatarColor] || avatarColors.mint;
+      if (community.avatarMode === "initials") {
+        return `<span class="avatar-mark" style="background-color:${color}">${escapeHTML(initialsForName(community.name))}</span>`;
+      }
+      if (community.avatarMode === "emoji") {
+        return `<span class="avatar-mark" style="background-color:${color}">${escapeHTML(community.avatarEmoji || community.emoji || "🌐")}</span>`;
+      }
+      return escapeHTML(community.emoji || "🌐");
+    }
+    function renderAvatarPreview() {
+      const name = $("#newCommunityName").value.trim();
+      const color = avatarColors[selectedAvatarColor] || avatarColors.mint;
+      if (selectedAvatarMode === "upload" && selectedCommunityImage) {
+        $("#uploadPreview").innerHTML = `<img src="${escapeHTML(selectedCommunityImage)}" alt="معاينة صورة المجتمع">`;
+      } else if (selectedAvatarMode === "initials") {
+        $("#uploadPreview").innerHTML = `<span class="avatar-mark" style="background-color:${color}">${escapeHTML(initialsForName(name))}</span>`;
+      } else {
+        $("#uploadPreview").innerHTML = `<span class="avatar-mark" style="background-color:${color}">${escapeHTML(selectedAvatarEmoji)}</span>`;
+      }
+      document.querySelectorAll(".avatar-mode-option").forEach(button => button.classList.toggle("selected", button.dataset.avatarMode === selectedAvatarMode));
+      $("#emojiAvatarPanel").hidden = selectedAvatarMode !== "emoji";
+      $("#initialsAvatarPanel").hidden = selectedAvatarMode !== "initials";
+      $("#uploadAvatarPanel").hidden = selectedAvatarMode !== "upload";
+      $("#avatarPreviewNote").textContent = selectedAvatarMode === "initials"
+        ? "تتحدث الشارة تلقائيًا مع اسم المجتمع."
+        : selectedAvatarMode === "upload"
+          ? "الصورة المختارة تبقى محلية في هذه المعاينة."
+          : "الإيموجي واللون يظهران كأيقونة للمجتمع.";
+    }
+    function setCreateStep(step) {
+      createStep = step;
+      const imageStep = step === 2;
+      $("#communityDetailsStep").hidden = imageStep;
+      $("#communityAvatarStep").hidden = !imageStep;
+      $("#previousCreateStep").hidden = !imageStep;
+      $("#nextCreateStep").hidden = imageStep;
+      $("#createCommunityButton").hidden = !imageStep;
+      $("#createStepLabel").textContent = imageStep ? "الخطوة ٢ من ٢ · صورة المجتمع" : "الخطوة ١ من ٢ · تفاصيل المجتمع";
+      $("#createStepProgress").style.width = imageStep ? "100%" : "50%";
+      if (imageStep) renderAvatarPreview();
+    }
+
+    function showToast(text) {
+      const toast = $("#toast");
+      toast.textContent = text;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 2300);
+    }
+    function renderCommunity() {
+      const community = communities[activeCommunity];
+      $("#serverName").textContent = community.name;
+      $("#serverEmoji").innerHTML = communityAvatarHTML(community);
+      $("#serverMeta").textContent = community.meta;
+      $("#musicPolicyTag").textContent = community.musicPolicy === "allowed"
+        ? "🎵 الموسيقى مسموحة"
+        : community.musicPolicy === "banned"
+          ? "🔇 الموسيقى ممنوعة"
+          : "🎵 يحدد صاحب المجتمع سياسة الموسيقى";
+      document.querySelectorAll(".community-button[data-community]").forEach(button => {
+        button.classList.toggle("active", button.dataset.community === activeCommunity);
+      });
+      const channelList = $("#channelList");
+      channelList.innerHTML = community.categories.map(category =>
+        `<div class="channel-category"><span>${escapeHTML(category.title)}</span><button aria-label="إضافة قناة" title="إضافة قناة تجريبية" data-add-channel>＋</button></div>` +
+        category.channels.map(channel =>
+          `<button class="channel ${channel.id === activeChannel ? "active" : ""}" data-channel="${escapeHTML(channel.id)}"><span class="hash">#</span><span>${escapeHTML(channel.name)}</span></button>`
+        ).join("")
+      ).join("") +
+      `<div class="channel-category"><span>صوتي</span><button aria-label="إضافة غرفة" title="إضافة غرفة صوتية تجريبية" data-add-channel>＋</button></div>
+       <div class="voice-card"><div class="voice-card-top"><strong>◖ ${escapeHTML(community.voice)}</strong><span class="live">● مباشر</span></div><p>غرفة صوتية للمجموعة</p><button class="join-voice" id="joinVoice">انضم للغرفة</button></div>`;
+      channelList.querySelectorAll("[data-channel]").forEach(button => {
+        button.addEventListener("click", () => {
+          activeChannel = button.dataset.channel;
+          renderCommunity();
+          renderMessages();
+          $("#layout").classList.add("chat-open");
+        });
+      });
+      channelList.querySelectorAll("[data-add-channel]").forEach(button => button.addEventListener("click", () => showToast("إضافة القنوات ستكون ضمن النسخة الكاملة.")));
+      $("#joinVoice").addEventListener("click", event => {
+        const button = event.currentTarget;
+        button.classList.toggle("joined");
+        const joined = button.classList.contains("joined");
+        button.textContent = joined ? "غادر الغرفة" : "انضم للغرفة";
+        showToast(joined ? "وضع تجريبي: لم يتم تشغيل الميكروفون." : "غادرت الغرفة التجريبية.");
+      });
+      $("#memberHeading").textContent = `الأعضاء — ${community.count}`;
+      const groups = {};
+      community.members.forEach(member => (groups[member.group] ||= []).push(member));
+      $("#memberList").innerHTML = Object.entries(groups).map(([group,members]) =>
+        `<div class="member-group"><div class="member-group-title">${escapeHTML(group)} — ${members.length}</div>` +
+        members.map(member => `<div class="member"><div class="avatar ${member.color}">${escapeHTML(member.initial)}</div><span class="member-name">${escapeHTML(member.name)}</span><span class="online-dot"></span></div>`).join("") +
+        `</div>`
+      ).join("");
+      $("#mobileOpenCommunity").querySelector(".mobile-community-icon").innerHTML = communityAvatarHTML(community);
+      $("#mobileOpenCommunity strong").textContent = community.name;
+      $("#channelTitle").textContent = activeChannel.replaceAll("-", " ");
+      const found = community.categories.flatMap(category => category.channels).find(channel => channel.id === activeChannel);
+      $("#channelTopic").textContent = found ? found.topic : "مساحة محادثة";
+      $("#messageInput").placeholder = `اكتب رسالة في #${activeChannel.replaceAll("-", " ")}…`;
+      $("#searchInput").value = "";
+    }
+    function renderCommunityRail() {
+      $("#communityList").innerHTML = Object.entries(communities).map(([id, community]) =>
+        `<button class="community-button ${id === activeCommunity ? "active" : ""}" data-community="${escapeHTML(id)}" title="${escapeHTML(community.name)}">${communityAvatarHTML(community)}</button>`
+      ).join("");
+      $("#communityList").querySelectorAll("[data-community]").forEach(button => button.addEventListener("click", () => {
+        activeCommunity = button.dataset.community;
+        activeChannel = "عام";
+        renderCommunityRail();
+        renderCommunity();
+        renderMessages();
+      }));
+    }
+    function renderMessages(filter="") {
+      const messages = (messagesByCommunity[activeCommunity][activeChannel] || []).filter(message =>
+        message.text.toLowerCase().includes(filter.toLowerCase()) ||
+        message.name.toLowerCase().includes(filter.toLowerCase())
+      );
+      const box = $("#messages");
+      if (!messages.length) {
+        box.innerHTML = `<div class="empty-state"><strong>${filter ? "ما لقينا نتائج" : "هذه القناة هادئة حتى الآن"}</strong>${filter ? "جرّب كلمة بحث ثانية." : "ابدأ برسالة لطيفة للمجموعة."}</div>`;
+        return;
+      }
+      box.innerHTML = `<div class="day-divider">اليوم</div>` + messages.map((message,index) =>
+        `<article class="message">
+          <div class="avatar ${escapeHTML(message.color || "")}">${escapeHTML(message.initial)}</div>
+          <div class="message-content">
+            <div class="message-head"><strong>${escapeHTML(message.name)}</strong><time>${escapeHTML(message.time)}</time><button class="report-button" data-report="${index}">إبلاغ</button></div>
+            <div class="message-text">${escapeHTML(message.text)}</div>
+            ${message.reaction ? `<div class="message-actions"><button class="reaction" data-react="${index}">${escapeHTML(message.reaction)}</button></div>` : ""}
+          </div>
+        </article>`
+      ).join("");
+      box.querySelectorAll("[data-report]").forEach(button => button.addEventListener("click", () => showToast("تم تسجيل بلاغ تجريبي — لا يُرسل إلى مشرف حقيقي.")));
+      box.querySelectorAll("[data-react]").forEach(button => button.addEventListener("click", () => showToast("التفاعلات للعرض التجريبي فقط.")));
+    }
+    $("#messageForm").addEventListener("submit", event => {
+      event.preventDefault();
+      const input = $("#messageInput");
+      const text = input.value.trim();
+      if (!text) return;
+      (messagesByCommunity[activeCommunity][activeChannel] ||= []).push({
+        name:"سامي", initial:"س", color:"", time:"الآن", text
+      });
+      input.value = "";
+      renderMessages();
+      $("#messages").scrollTop = $("#messages").scrollHeight;
+      showToast("أُضيفت الرسالة في هذه التجربة فقط.");
+    });
+    $("#messageInput").addEventListener("keydown", event => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        $("#messageForm").requestSubmit();
+      }
+    });
+    $("#searchInput").addEventListener("input", event => renderMessages(event.target.value.trim()));
+    $("#openCreate").addEventListener("click", () => {
+      setCreateStep(1);
+      $("#createModal").classList.add("open");
+    });
+    $("#nextCreateStep").addEventListener("click", () => {
+      if (!$("#newCommunityName").value.trim()) {
+        $("#newCommunityName").focus();
+        showToast("اكتب اسم المجتمع أولًا.");
+        return;
+      }
+      setCreateStep(2);
+    });
+    $("#previousCreateStep").addEventListener("click", () => setCreateStep(1));
+    $("#closeCreate").addEventListener("click", () => $("#createModal").classList.remove("open"));
+    $("#createModal").addEventListener("click", event => { if (event.target === $("#createModal")) $("#createModal").classList.remove("open"); });
+    document.querySelectorAll(".template-option").forEach(button => button.addEventListener("click", () => {
+      selectedTemplate = button.dataset.template;
+      document.querySelectorAll(".template-option").forEach(item => item.classList.toggle("selected", item === button));
+      renderAvatarPreview();
+    }));
+    document.querySelectorAll(".avatar-mode-option").forEach(button => button.addEventListener("click", () => {
+      selectedAvatarMode = button.dataset.avatarMode;
+      renderAvatarPreview();
+    }));
+    document.querySelectorAll(".emoji-option").forEach(button => button.addEventListener("click", () => {
+      selectedAvatarEmoji = button.dataset.avatarEmoji;
+      document.querySelectorAll(".emoji-option").forEach(item => item.classList.toggle("selected", item === button));
+      renderAvatarPreview();
+    }));
+    document.querySelectorAll(".avatar-color-option").forEach(button => button.addEventListener("click", () => {
+      selectedAvatarColor = button.dataset.avatarColor;
+      document.querySelectorAll(".avatar-color-option").forEach(item => item.classList.toggle("selected", item.dataset.avatarColor === selectedAvatarColor));
+      renderAvatarPreview();
+    }));
+    $("#newCommunityName").addEventListener("input", renderAvatarPreview);
+    document.querySelectorAll(".music-option").forEach(button => button.addEventListener("click", () => {
+      selectedMusicPolicy = button.dataset.musicPolicy;
+      document.querySelectorAll(".music-option").forEach(item => item.classList.toggle("selected", item === button));
+    }));
+    $("#communityImageInput").addEventListener("change", event => {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      if (!["image/png","image/jpeg","image/webp"].includes(file.type)) {
+        showToast("اختر صورة PNG أو JPG أو WebP.");
+        event.target.value = "";
+        return;
+      }
+      if (file.size > 3 * 1024 * 1024) {
+        showToast("حجم الصورة أكبر من 3MB.");
+        event.target.value = "";
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        selectedCommunityImage = String(reader.result || "");
+        selectedAvatarMode = "upload";
+        renderAvatarPreview();
+      };
+      reader.onerror = () => showToast("تعذر قراءة الصورة. جرّب ملفًا آخر.");
+      reader.readAsDataURL(file);
+    });
+    $("#removeCommunityImage").addEventListener("click", () => {
+      selectedCommunityImage = "";
+      $("#communityImageInput").value = "";
+      selectedAvatarMode = "emoji";
+      renderAvatarPreview();
+    });
+    $("#createCommunityButton").addEventListener("click", () => {
+      const name = $("#newCommunityName").value.trim();
+      if (!name) { $("#newCommunityName").focus(); showToast("اكتب اسمًا للمجتمع أولًا."); return; }
+      if (!selectedMusicPolicy) {
+        setCreateStep(1);
+        showToast("اختر سياسة الموسيقى لهذا المجتمع.");
+        return;
+      }
+      const template = communityTemplates[selectedTemplate];
+      const id = `new_${++createdCommunityCount}`;
+      communities[id] = {
+        name, emoji:template.emoji, meta:`٠ أعضاء · ${template.label}`,
+        categories:template.categories.map(category => ({title:category.title,channels:category.channels.map(channel => ({...channel}))})),
+        voice:template.voice, count:"٠", members:[], musicPolicy:selectedMusicPolicy,
+        avatarMode:selectedAvatarMode, avatarEmoji:selectedAvatarEmoji, avatarColor:selectedAvatarColor,
+        image:selectedAvatarMode === "upload" ? selectedCommunityImage : ""
+      };
+      messagesByCommunity[id] = {"عام":[]};
+      activeCommunity = id;
+      activeChannel = "عام";
+      $("#createModal").classList.remove("open");
+      $("#newCommunityName").value = "";
+      selectedMusicPolicy = "";
+      selectedCommunityImage = "";
+      selectedAvatarMode = "emoji";
+      selectedAvatarEmoji = template.emoji;
+      selectedAvatarColor = "mint";
+      $("#communityImageInput").value = "";
+      document.querySelectorAll(".music-option").forEach(item => item.classList.remove("selected"));
+      document.querySelectorAll(".emoji-option").forEach(item => item.classList.toggle("selected", item.dataset.avatarEmoji === selectedAvatarEmoji));
+      document.querySelectorAll(".avatar-color-option").forEach(item => item.classList.toggle("selected", item.dataset.avatarColor === selectedAvatarColor));
+      setCreateStep(1);
+      renderAvatarPreview();
+      renderCommunityRail();
+      renderCommunity();
+      renderMessages();
+      showToast(`أُنشئ مجتمع «${name}» على هذه المعاينة فقط.`);
+    });
+    $("#inviteButton").addEventListener("click", () => showToast("رابط الدعوة غير فعّال في النموذج التجريبي."));
+    $("#inviteCardButton").addEventListener("click", () => showToast("لا يوجد رابط حقيقي — هذه معاينة فقط."));
+    $("#helpButton").addEventListener("click", () => showToast("نصيحة: لا تشارك معلوماتك الشخصية، واستخدم الإبلاغ عند الحاجة."));
+    $("#settingsButton").addEventListener("click", () => showToast("إعدادات الخصوصية والأمان قيد تصميم النموذج."));
+    $("#membersButton").addEventListener("click", () => showToast("قائمة الأعضاء ظاهرة في الشاشات الواسعة."));
+    $("#mobileOpenCommunity").addEventListener("click", () => $("#layout").classList.add("chat-open"));
+    $("#mobileBack").addEventListener("click", () => $("#layout").classList.remove("chat-open"));
+    document.addEventListener("keydown", event => { if (event.key === "Escape") $("#createModal").classList.remove("open"); });
+    renderCommunityRail();
+    renderCommunity();
+    renderMessages();
+    setCreateStep(1);
+    renderAvatarPreview();
+  </script>
+</body>
+</html>
