@@ -1,2 +1,2 @@
-# ArabGG
-ArabGG — static interactive prototype
+# ArabCHAT
+ArabCHAT — static interactive prototype
