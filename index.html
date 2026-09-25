@@ -5,8 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#11141c">
   <title>ArabGG — نسخة أونلاين فوري</title>
-  <!-- استدعاء مكتبة السيرفر السحابي Supabase -->
-  <script src="https://jsdelivr.net"></script>
+  
+  <!-- استدعاء مكتبات جوجل السحابية Firebase (تحديث 2026 المستقر) -->
+  <script src="https://gstatic.com"></script>
+  <script src="https://gstatic.com"></script>
+
   <style>
     :root {
       color-scheme: dark;
@@ -27,121 +30,48 @@
     }
 
     * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); font-size: 14px; overflow-x: hidden; }
+    button, input { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: var(--bg);
-      color: var(--text);
-      font-size: 14px;
-      overflow-x: hidden;
-    }
-
-    button, input, textarea { font: inherit; }
-    button { color: inherit; background: none; border: none; cursor: pointer; }
-
-    .app {
-      min-height: 100vh;
-      display: grid;
-      grid-template-rows: 66px 1fr;
-    }
+    .app { min-height: 100vh; display: grid; grid-template-rows: 66px 1fr; }
 
     /* Topbar */
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 24px;
-      background: rgba(25, 29, 40, .94);
-      border-bottom: 1px solid var(--line);
-      z-index: 3;
-      backdrop-filter: blur(8px);
-    }
-
-    .brand-section { display: flex; align-items: center; gap: 20px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; padding: 0 24px; background: rgba(25, 29, 40, .94); border-bottom: 1px solid var(--line); z-index: 3; backdrop-filter: blur(8px); }
     .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 19px; }
-    .brand-mark {
-      display: grid; place-items: center; width: 34px; height: 34px;
-      border-radius: 10px; background: #202838; transform: rotate(-4deg);
-    }
-    .brand small { color: var(--muted); font-size: 11px; font-weight: 500; }
-
-    .search { position: relative; width: min(420px, 35vw); }
-    .search input {
-      width: 100%; height: 38px; padding: 0 38px 0 14px; border-radius: 11px;
-      border: 1px solid var(--line); outline: none; color: var(--text); background: #121620;
-      transition: border-color 0.2s ease;
-    }
-    .search input:focus { border-color: var(--mint); }
-    .search-icon { position: absolute; right: 13px; top: 50%; transform: translateY(-50%); color: var(--subtle); pointer-events: none; }
-
+    .brand-mark { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: #202838; transform: rotate(-4deg); color: var(--mint); font-weight: 900; }
     .top-actions { display: flex; align-items: center; gap: 12px; }
-    .safety-pill {
-      display: inline-flex; align-items: center; gap: 7px; padding: 8px 14px;
-      border-radius: 999px; color: #b9f4e4; background: rgba(131, 226, 198, .09);
-      border: 1px solid rgba(131, 226, 198, .15); font-size: 12px;
-    }
-    
-    .login-btn {
-      background: var(--mint); color: #11141c; padding: 8px 18px;
-      border-radius: 999px; font-weight: 700; font-size: 13px;
-      transition: opacity 0.2s;
-    }
-    .login-btn:hover { opacity: 0.9; }
+    .safety-pill { display: inline-flex; align-items: center; gap: 7px; padding: 8px 14px; border-radius: 999px; color: #b9f4e4; background: rgba(131, 226, 198, .09); border: 1px solid rgba(131, 226, 198, .15); font-size: 12px; }
+    .login-btn { background: var(--mint); color: #11141c; padding: 8px 18px; border-radius: 999px; font-weight: 700; font-size: 13px; }
 
     /* Layout Structure */
     .layout { min-height: 0; display: grid; grid-template-columns: 72px 236px 1fr 218px; }
 
     /* Column 1: Communities */
     .communities { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 18px 0; background: #151923; border-left: 1px solid var(--line); }
-    .community-list { display: flex; flex-direction: column; align-items: center; gap: 12px; max-height: calc(100vh - 145px); overflow-y: auto; scrollbar-width: none; }
-    .community-list::-webkit-scrollbar { display: none; }
-    
-    .community-button {
-      width: 46px; height: 46px; border-radius: 16px; display: grid; place-items: center;
-      background: var(--panel-3); font-size: 20px; position: relative; transition: all 0.2s ease;
-    }
-    .community-button:hover { border-radius: 13px; background: #353d50; }
-    .community-button.active { border-radius: 13px; background: var(--mint); color: #17211f; }
-    .community-button.active::before { content: ""; position: absolute; right: -13px; width: 4px; height: 25px; border-radius: 4px 0 0 4px; background: var(--mint); }
-    .community-button.add { color: var(--mint); background: var(--mint-dark); font-size: 24px; }
+    .community-button { width: 46px; height: 46px; border-radius: 16px; display: grid; place-items: center; background: var(--panel-3); font-size: 20px; transition: all 0.2s; }
+    .community-button.active { background: var(--mint); color: #17211f; }
     .community-divider { width: 28px; height: 1px; background: var(--line); margin: 2px 0; }
 
     /* Column 2: Sidebar Channels */
     .sidebar { display: flex; flex-direction: column; min-height: 0; background: var(--panel); border-left: 1px solid var(--line); }
     .server-heading { padding: 20px 17px 16px; border-bottom: 1px solid var(--line); }
-    .server-title-row { display: flex; align-items: center; gap: 10px; }
-    .server-emoji { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px; background: #2e3546; font-size: 19px; }
     .server-heading h1 { margin: 0; font-size: 15px; }
-    .server-heading p { margin: 4px 0 0; color: var(--muted); font-size: 11px; }
-    .private-tag { display: inline-flex; gap: 5px; align-items: center; margin-top: 13px; padding: 5px 8px; color: #b6c5d9; background: rgba(255, 255, 255, .045); border-radius: 7px; font-size: 10px; }
-    
     .channel-list { padding: 12px 10px; overflow-y: auto; flex: 1; }
-    .channel-category { display: flex; align-items: center; justify-content: space-between; margin: 10px 6px 7px; color: var(--muted); font-size: 11px; font-weight: 700; }
-    
-    .channel {
-      width: 100%; display: flex; align-items: center; gap: 9px; padding: 9px 10px; margin: 2px 0;
-      border-radius: 9px; color: var(--muted); text-align: right; transition: all 0.15s ease;
-    }
-    .channel:hover { background: rgba(255, 255, 255, .04); color: var(--text); }
+    .channel-category { color: var(--muted); font-size: 11px; font-weight: 700; margin-bottom: 8px; }
+    .channel { width: 100%; display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 9px; color: var(--muted); text-align: right; }
     .channel.active { background: rgba(131, 226, 198, .11); color: var(--mint); }
-    .channel .hash { color: var(--subtle); font-size: 16px; }
-
-    .voice-card { margin: 5px 4px 7px; padding: 11px; background: #212838; border: 1px solid var(--line); border-radius: 11px; }
-    .voice-card p { color: var(--muted); margin: 6px 0 10px; font-size: 11px; }
-    .join-voice { width: 100%; border-radius: 8px; padding: 8px; color: #152420; background: var(--mint); font-size: 11px; font-weight: 700; }
-
-    /* Profile Container */
     .profile { padding: 12px; display: flex; align-items: center; gap: 9px; background: rgba(0, 0, 0, .15); border-top: 1px solid var(--line); }
     .avatar { flex: 0 0 auto; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; color: #17211f; background: #f1c58e; font-weight: 800; }
 
     /* Column 3: Main Chat Content */
     .main-content { display: grid; grid-template-rows: auto 1fr auto; background: var(--bg); min-height: 0; }
     .chat-header { padding: 18px 24px; border-bottom: 1px solid var(--line); background: rgba(25, 29, 40, 0.4); }
-    .chat-header h2 { margin: 0; font-size: 16px; display: flex; align-items: center; gap: 8px; }
+    .chat-header h2 { margin: 0; font-size: 16px; }
+    .chat-messages { padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; min-height: 200px; }
     
-    .chat-messages { padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
-    .message { display: flex; gap: 12px; }
+    .message { display: flex; gap: 12px; animation: fadeIn 0.2s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    
     .msg-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--panel-3); display: grid; place-items: center; font-weight: bold; flex-shrink: 0; }
     .msg-body { display: flex; flex-direction: column; gap: 4px; }
     .msg-user { font-weight: 700; font-size: 13px; color: var(--mint); }
@@ -153,47 +83,107 @@
 
     /* Column 4: Activity Sidebar */
     .activity-sidebar { background: var(--panel); padding: 16px; border-right: 1px solid var(--line); }
-    .activity-sidebar h3 { font-size: 12px; color: var(--muted); margin-bottom: 12px; text-transform: uppercase; }
 
     /* --- Auth Modal --- */
-    .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(11, 13, 19, 0.85); backdrop-filter: blur(6px);
-      display: grid; place-items: center; z-index: 10;
-      opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
-    }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 13, 19, 0.85); backdrop-filter: blur(6px); display: grid; place-items: center; z-index: 10; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
     .modal-overlay.open { opacity: 1; pointer-events: auto; }
-    
-    .auth-card {
-      background: var(--panel); border: 1px solid var(--line); width: min(400px, 90vw);
-      border-radius: var(--radius); padding: 32px; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-    }
+    .auth-card { background: var(--panel); border: 1px solid var(--line); width: min(400px, 90vw); border-radius: var(--radius); padding: 32px; }
     .auth-card h2 { margin: 0 0 8px; font-size: 22px; text-align: center; }
-    .auth-card p { margin: 0 0 24px; color: var(--muted); text-align: center; font-size: 13px; }
-    
     .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
-    .form-group label { font-size: 12px; color: var(--muted); font-weight: 600; }
-    .form-group input {
-      height: 42px; background: #121620; border: 1px solid var(--line);
-      border-radius: 8px; padding: 0 12px; color: var(--text); outline: none;
-    }
-    .form-group input:focus { border-color: var(--mint); }
-    
-    .submit-auth {
-      width: 100%; height: 42px; background: var(--mint); color: #11141c;
-      border-radius: 8px; font-weight: 700; margin-top: 10px; font-size: 14px;
-    }
-    .auth-switch { text-align: center; margin-top: 16px; font-size: 12px; color: var(--subtle); }
-    .auth-switch span { color: var(--mint); cursor: pointer; font-weight: 600; }
+    .form-group input { height: 42px; background: #121620; border: 1px solid var(--line); border-radius: 8px; padding: 0 12px; color: var(--text); outline: none; }
+    .submit-auth { width: 100%; height: 42px; background: var(--mint); color: #11141c; border-radius: 8px; font-weight: 700; margin-top: 10px; }
 
     /* Responsive */
     @media (max-width: 1024px) { .layout { grid-template-columns: 72px 236px 1fr; } .activity-sidebar { display: none; } }
-    @media (max-width: 768px) { .layout { grid-template-columns: 64px 1fr; } .sidebar { display: none; } .search { display: none; } }
+    @media (max-width: 768px) { .layout { grid-template-columns: 64px 1fr; } .sidebar { display: none; } }
   </style>
 </head>
 <body>
 
   <div class="app">
     <header class="topbar">
-      <div class="brand-section">
-        <div class="brand">
+      <div class="brand">
+        <div class="brand-mark">A</div>
+        <div>ArabGG <small>نسخة لايف</small></div>
+      </div>
+      <div class="top-actions">
+        <span class="safety-pill">🟢 اتصال مباشر مباشر</span>
+        <button class="login-btn" id="openAuthBtn">تسجيل اسم المستعار</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="communities">
+        <button class="community-button active">G</button>
+        <div class="community-divider"></div>
+        <button class="community-button">+</button>
+      </section>
+
+      <section class="sidebar">
+        <div class="server-heading">
+          <h1>مجتمع الألعاب العربي</h1>
+        </div>
+        <div class="channel-list">
+          <div class="channel-category">قنوات نصية</div>
+          <button class="channel active"><span style="color: var(--subtle)">#</span> العامة</button>
+        </div>
+        <div class="profile">
+          <div class="avatar" id="userAvatar">?</div>
+          <div>
+            <div id="usernameDisplay" style="font-weight:700;">زائر (أوفلاين)</div>
+            <div style="color:var(--subtle); font-size:10px;">اضغط الزر العلوي للبدء</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="main-content">
+        <div class="chat-header">
+          <h2># العامة</h2>
+        </div>
+        
+        <!-- هنا تعرض الرسائل الحية من السيرفر -->
+        <div class="chat-messages" id="chatMessages"></div>
+
+        <div class="chat-input-area">
+          <div class="chat-input-wrapper">
+            <input type="text" id="chatInput" disabled placeholder="اكتب اسمك المستعار من الأعلى أولاً للبدء بالدردشة...">
+            <button id="sendMsgBtn" disabled style="color:var(--mint); font-weight:700;">إرسال</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="activity-sidebar">
+        <h3 style="font-size:12px; color:var(--muted);">حالة السيرفر</h3>
+        <p style="font-size:11px; color:var(--mint)">متصل بالخادم السحابي 🟢</p>
+      </section>
+    </main>
+  </div>
+
+  <!-- نافذة اختيار الاسم المستعار السريعة -->
+  <div class="modal-overlay" id="authModal">
+    <div class="auth-card">
+      <h2>اختر اسمك المستعار</h2>
+      <p style="text-align:center; color:var(--muted); font-size:12px; margin-bottom:20px;">ادخل اسمك لتبدأ المحادثة أونلاين فوراً</p>
+      <form onsubmit="saveUsername(event)">
+        <div class="form-group">
+          <input type="text" id="customName" required placeholder="مثال: سكوربيون_99" maxlength="15">
+        </div>
+        <button type="submit" class="submit-auth">دخول إلى الشات</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // 🔗 إنشاء قاعدة بيانات سحابية عامة وفورية خاصة بـ ArabGG للتشغيل المباشر الآن
+    const firebaseConfig = {
+      databaseURL: "https://firebaseio.com"
+    };
+    
+    // تشغيل الاتصال بالسيرفر
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const messagesRef = database.ref('messages');
+
+    const chatInput = document.getElementById('chatInput');
+    const sendMsgBtn = document.getElementById('sendMsgBtn');
+    const chatMessages = document.getElementById('chatMessages');
