@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#11141c">
-  <title>ArabGG — نموذج تجريبي مُحسّن</title>
+  <title>ArabGG — نسخة تجريبية</title>
   <style>
     :root {
       color-scheme: dark;
@@ -54,7 +54,7 @@
       grid-template-rows: 66px 1fr;
     }
 
-    /*Topbar Styles*/
+    /* Topbar */
     .topbar {
       display: flex;
       align-items: center;
@@ -63,7 +63,7 @@
       background: rgba(25, 29, 40, .94);
       border-bottom: 1px solid var(--line);
       z-index: 3;
-      backdrop-filter: blur(8px); /* تأثير زجاجي ناعم للخلفية */
+      backdrop-filter: blur(8px);
     }
 
     .brand {
@@ -85,12 +85,6 @@
       overflow: hidden;
       background: #202838;
       transform: rotate(-4deg);
-    }
-
-    .brand-mark svg { 
-      width: 100%; 
-      height: 100%; 
-      transform: rotate(4deg); 
     }
 
     .brand small { 
@@ -163,7 +157,7 @@
       grid-template-columns: 72px 236px 1fr 218px;
     }
 
-    /* Communities Sidebar */
+    /* Column 1: Communities Sidebar */
     .communities {
       display: flex;
       flex-direction: column;
@@ -197,8 +191,7 @@
       background: var(--panel-3);
       font-size: 20px;
       position: relative;
-      transition: border-radius 0.2s ease, background-color 0.2s ease, color 0.2s ease;
-      will-change: transform, border-radius;
+      transition: border-radius 0.2s ease, background-color 0.2s ease;
     }
 
     .community-button:hover { 
@@ -228,21 +221,12 @@
       font-size: 24px; 
     }
 
-    .community-button img { 
-      width: 100%; 
-      height: 100%; 
-      object-fit: cover; 
-      border-radius: inherit; 
-    }
-
-    .community-button .avatar-mark, 
-    .server-emoji .avatar-mark {
+    .community-button .avatar-mark {
       display: grid; 
       width: 100%; 
       height: 100%; 
       place-items: center;
       border-radius: inherit; 
-      color: #17211f; 
       font-weight: 800;
     }
 
@@ -253,7 +237,7 @@
       margin: 2px 0; 
     }
 
-    /* Sidebar Channels */
+    /* Column 2: Sidebar Channels */
     .sidebar {
       display: flex;
       flex-direction: column;
@@ -281,17 +265,6 @@
       border-radius: 12px;
       background: #2e3546;
       font-size: 19px;
-      overflow: hidden;
-    }
-
-    .server-emoji img { 
-      width: 100%; 
-      height: 100%; 
-      object-fit: cover; 
-    }
-
-    .server-emoji .avatar-mark { 
-      font-size: 16px; 
     }
 
     .server-heading h1 { 
@@ -305,7 +278,7 @@
       font-size: 11px; 
     }
 
-    .private-tag, .community-policy {
+    .private-tag {
       display: inline-flex;
       gap: 5px; 
       align-items: center;
@@ -315,12 +288,6 @@
       background: rgba(255, 255, 255, .045);
       border-radius: 7px;
       font-size: 10px;
-    }
-
-    .community-policy {
-      margin-top: 6px;
-      color: #e3d8bb;
-      background: rgba(238, 197, 142, .075);
     }
 
     .channel-list { 
@@ -366,10 +333,6 @@
       font-size: 16px; 
     }
 
-    .channel.active .hash { 
-      color: var(--mint); 
-    }
-
     .voice-card {
       margin: 5px 4px 7px;
       padding: 11px;
@@ -382,15 +345,6 @@
       display: flex; 
       justify-content: space-between; 
       align-items: center; 
-    }
-
-    .voice-card strong { 
-      font-size: 12px; 
-    }
-
-    .live { 
-      color: var(--mint); 
-      font-size: 10px; 
     }
 
     .voice-card p { 
@@ -407,12 +361,6 @@
       background: var(--mint);
       font-size: 11px;
       font-weight: 700;
-      transition: background-color 0.2s ease;
-    }
-
-    .join-voice.joined { 
-      color: var(--mint); 
-      background: var(--mint-dark); 
     }
 
     /* Profile Component */
@@ -438,25 +386,35 @@
       font-weight: 800;
     }
 
+    /* Column 3: Main Chat Content */
+    .main-content {
+      padding: 24px;
+      background: var(--bg);
+    }
+
+    /* Column 4: Activity Sidebar */
+    .activity-sidebar {
+      background: var(--panel);
+      padding: 16px;
+      border-right: 1px solid var(--line);
+    }
+
     /* Media Queries Responsive Design */
     @media (max-width: 1024px) {
       .layout {
-        grid-template-columns: 72px 200px 1fr; /* إخفاء القائمة الرابعة اليمنى لتوفير مساحة */
+        grid-template-columns: 72px 236px 1fr;
       }
-      .layout > *:nth-child(4) {
+      .activity-sidebar {
         display: none;
       }
     }
 
     @media (max-width: 768px) {
       .layout {
-        grid-template-columns: 64px 1fr; /* إخفاء القائمة الجانبية للشات والاعتماد على الأيقونات فقط للمجتمعات */
+        grid-template-columns: 64px 1fr;
       }
       .sidebar {
         display: none;
-      }
-      .search {
-        width: 100%;
       }
     }
   </style>
@@ -464,11 +422,45 @@
 <body>
 
   <div class="app">
-    <!-- شريط علوي -->
+    <!-- الشريط العلوي -->
     <header class="topbar">
       <div class="brand">
         <div class="brand-mark">
-          <!-- هنا يوضع الـ SVG الخاص بالـ Brand -->
           <span style="color:var(--mint); font-weight:900;">A</span>
         </div>
         <div>
+          ArabGG <small>نسخة تجريبية</small>
+        </div>
+      </div>
+      
+      <div class="search">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="ابحث عن مجتمعات، قنوات...">
+      </div>
+
+      <div class="top-actions">
+        <span class="safety-pill">🛡️ آمن</span>
+        <span class="demo-pill">تجريبي</span>
+      </div>
+    </header>
+
+    <!-- محتوى التطبيق المقسم لأعمدة -->
+    <main class="layout">
+      
+      <!-- العمود الأول: المجتمعات -->
+      <section class="communities">
+        <div class="community-list">
+          <button class="community-button active">
+            <span class="avatar-mark">G</span>
+          </button>
+          <div class="community-divider"></div>
+          <button class="community-button">
+            <span class="avatar-mark">A</span>
+          </button>
+          <button class="community-button add">+</button>
+        </div>
+      </section>
+
+      <!-- العمود الثاني: القنوات والغرف -->
+
+      
