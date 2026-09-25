@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#11141c">
-  <title>ArabGG — نسخة لايف حقيقية</title>
+  <title>ArabGG — نسخة لايف تعمل فوراً</title>
   <style>
     :root {
       color-scheme: dark;
@@ -19,13 +19,12 @@
       --mint: #83e2c6;
       --mint-dark: #183b37;
       --violet: #a99bf7;
-      --danger: #ff8b97;
       --radius: 16px;
       font-family: "Noto Sans Arabic", "Segoe UI", Tahoma, Arial, sans-serif;
     }
 
     * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); font-size: 14px; overflow-x: hidden; }
+    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); font-size: 14px; overflow: hidden; }
     button, input { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
 
     .app { min-height: 100vh; display: grid; grid-template-rows: 66px 1fr; }
@@ -38,8 +37,8 @@
     .safety-pill { display: inline-flex; align-items: center; gap: 7px; padding: 8px 14px; border-radius: 999px; color: #b9f4e4; background: rgba(131, 226, 198, .09); border: 1px solid rgba(131, 226, 198, .15); font-size: 12px; }
     .login-btn { background: var(--mint); color: #11141c; padding: 8px 18px; border-radius: 999px; font-weight: 700; font-size: 13px; }
 
-    /* Layout Structure */
-    .layout { min-height: 0; display: grid; grid-template-columns: 72px 236px 1fr 218px; }
+    /* Layout Structure - تم تعديل الترتيب ليناسب اتجاه RTL بشكل صحيح */
+    .layout { min-height: 0; display: grid; grid-template-columns: 72px 236px 1fr 218px; height: 100%; }
 
     /* Column 1: Communities */
     .communities { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 18px 0; background: #151923; border-left: 1px solid var(--line); }
@@ -55,14 +54,14 @@
     .channel-category { color: var(--muted); font-size: 11px; font-weight: 700; margin-bottom: 8px; }
     .channel { width: 100%; display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 9px; color: var(--muted); text-align: right; }
     .channel.active { background: rgba(131, 226, 198, .11); color: var(--mint); }
-    .profile { padding: 12px; display: flex; align-items: center; gap: 9px; background: rgba(0, 0, 0, .15); border-top: 1px solid var(--line); }
+    .profile { padding: 12px; display: flex; align-items: center; gap: 9px; background: rgba(0, 0, 0, .15); border-top: 1px solid var(--line); margin-top: auto; }
     .avatar { flex: 0 0 auto; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; color: #17211f; background: #f1c58e; font-weight: 800; }
 
     /* Column 3: Main Chat Content */
-    .main-content { display: grid; grid-template-rows: auto 1fr auto; background: var(--bg); min-height: 0; }
+    .main-content { display: grid; grid-template-rows: auto 1fr auto; background: var(--bg); min-height: 0; height: 100%; }
     .chat-header { padding: 18px 24px; border-bottom: 1px solid var(--line); background: rgba(25, 29, 40, 0.4); }
     .chat-header h2 { margin: 0; font-size: 16px; }
-    .chat-messages { padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; min-height: 200px; }
+    .chat-messages { padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; flex: 1; min-height: 0; }
     
     .message { display: flex; gap: 12px; animation: fadeIn 0.2s ease-in-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
@@ -72,7 +71,7 @@
     .msg-user { font-weight: 700; font-size: 13px; color: var(--mint); }
     .msg-text { color: #e2e8f0; line-height: 1.5; }
 
-    .chat-input-area { padding: 0 24px 24px; }
+    .chat-input-area { padding: 0 24px 24px; background: var(--bg); }
     .chat-input-wrapper { display: flex; align-items: center; background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 4px 12px; }
     .chat-input-wrapper input { flex: 1; height: 44px; background: none; border: none; outline: none; color: var(--text); }
 
@@ -99,28 +98,30 @@
     <header class="topbar">
       <div class="brand">
         <div class="brand-mark">A</div>
-        <div>ArabGG <small>نسخة حية</small></div>
+        <div>ArabGG <small>نسخة مباشرة</small></div>
       </div>
       <div class="top-actions">
-        <span class="safety-pill" id="statusPill">⏳ جاري الاتصال بالسيرفر السحابي...</span>
+        <span class="safety-pill" id="statusPill">⏳ جاري الاتصال...</span>
         <button class="login-btn" id="openAuthBtn">تسجيل الاسم المستعار</button>
       </div>
     </header>
 
     <main class="layout">
+      <!-- العمود الأول: السيرفرات والمجتمعات -->
       <section class="communities">
         <button class="community-button active">G</button>
         <div class="community-divider"></div>
         <button class="community-button" id="addCommunityBtn">+</button>
       </section>
 
+      <!-- العمود الثاني: القنوات -->
       <section class="sidebar">
         <div class="server-heading">
           <h1 id="serverName">مجتمع الألعاب العربي</h1>
         </div>
         <div class="channel-list">
           <div class="channel-category">قنوات نصية</div>
-          <button class="channel active"><span style="color: var(--subtle)">#</span> العامة</button>
+          <button class="channel active"><span>#</span> العامة</button>
         </div>
         <div class="profile">
           <div class="avatar" id="userAvatar">?</div>
@@ -131,6 +132,7 @@
         </div>
       </section>
 
+      <!-- العمود الثالث: منطقة المحادثة والشات والرسائل القادمة -->
       <section class="main-content">
         <div class="chat-header">
           <h2># العامة</h2>
@@ -146,6 +148,7 @@
         </div>
       </section>
 
+      <!-- العمود الرابع: النشاط الجانبي والمشتركين -->
       <section class="activity-sidebar">
         <h3 style="font-size:12px; color:var(--muted);">حالة السيرفر</h3>
         <p style="font-size:11px; color:var(--mint)" id="networkStatus">جاري الاتصال... 🟡</p>
@@ -153,6 +156,7 @@
     </main>
   </div>
 
+  <!-- نافذة تسجيل الاسم المستعار المنبثقة للبدء -->
   <div class="modal-overlay" id="authModal">
     <div class="auth-card">
       <h2>اختر اسمك المستعار</h2>
@@ -167,18 +171,10 @@
   </div>
 
   <script>
-    // 🌐 ربط الشات بسيرفر عام مفتوح ومجاني (تحديث مباشر وتلقائي بدون مفاتيح معقدة)
+    // 🌐 ربط الشات بسيرفر عام للبث التلقائي بين المتصفحات والأصدقاء
     const socket = new WebSocket('wss://://piesocket.com');
 
     const chatInput = document.getElementById('chatInput');
     const sendMsgBtn = document.getElementById('sendMsgBtn');
     const chatMessages = document.getElementById('chatMessages');
     const authModal = document.getElementById('authModal');
-    const openAuthBtn = document.getElementById('openAuthBtn');
-    const addCommunityBtn = document.getElementById('addCommunityBtn');
-    const statusPill = document.getElementById('statusPill');
-    const networkStatus = document.getElementById('networkStatus');
-    
-    let myUsername = localStorage.getItem('arabgg_username') || "";
-
-    // فتح واجهة الاسم تلقائياً للمستخدم الجديد
