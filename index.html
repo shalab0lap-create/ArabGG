@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#11141c">
-  <title>ArabGG — نسخة لايف تعمل فوراً</title>
+  <title>ArabGG — نسخة لايف حقيقية</title>
   <style>
     :root {
       color-scheme: dark;
@@ -99,10 +99,10 @@
     <header class="topbar">
       <div class="brand">
         <div class="brand-mark">A</div>
-        <div>ArabGG <small>نسخة مباشرة</small></div>
+        <div>ArabGG <small>نسخة حية</small></div>
       </div>
       <div class="top-actions">
-        <span class="safety-pill">🟢 أونلاين حقيقي</span>
+        <span class="safety-pill" id="statusPill">⏳ جاري الاتصال بالسيرفر السحابي...</span>
         <button class="login-btn" id="openAuthBtn">تسجيل الاسم المستعار</button>
       </div>
     </header>
@@ -148,7 +148,7 @@
 
       <section class="activity-sidebar">
         <h3 style="font-size:12px; color:var(--muted);">حالة السيرفر</h3>
-        <p style="font-size:11px; color:var(--mint)">متصل بالخادم السحابي 🟢</p>
+        <p style="font-size:11px; color:var(--mint)" id="networkStatus">جاري الاتصال... 🟡</p>
       </section>
     </main>
   </div>
@@ -156,7 +156,7 @@
   <div class="modal-overlay" id="authModal">
     <div class="auth-card">
       <h2>اختر اسمك المستعار</h2>
-      <p style="text-align:center; color:var(--muted); font-size:12px; margin-bottom:20px;">ادخل اسمك لتبدأ المحادثة فوراً</p>
+      <p style="text-align:center; color:var(--muted); font-size:12px; margin-bottom:20px;">ادخل اسمك لتبدأ المحادثة فوراً أونلاين مع أصدقائك</p>
       <form onsubmit="saveUsername(event)">
         <div class="form-group">
           <input type="text" id="customName" required placeholder="مثال: سكوربيون_99" maxlength="15">
@@ -167,8 +167,8 @@
   </div>
 
   <script>
-    // 🔗 اتصال مباشر وسريع عبر API قاعدة بيانات سحابية عامة لتشغيل أزرار الشات والرسائل فوراً
-    const API_URL = 'https://restful-api.dev';
+    // 🌐 ربط الشات بسيرفر عام مفتوح ومجاني (تحديث مباشر وتلقائي بدون مفاتيح معقدة)
+    const socket = new WebSocket('wss://://piesocket.com');
 
     const chatInput = document.getElementById('chatInput');
     const sendMsgBtn = document.getElementById('sendMsgBtn');
@@ -176,14 +176,9 @@
     const authModal = document.getElementById('authModal');
     const openAuthBtn = document.getElementById('openAuthBtn');
     const addCommunityBtn = document.getElementById('addCommunityBtn');
+    const statusPill = document.getElementById('statusPill');
+    const networkStatus = document.getElementById('networkStatus');
     
     let myUsername = localStorage.getItem('arabgg_username') || "";
 
-    // تفعيل النافذة تلقائياً
-    if (!myUsername) {
-      authModal.classList.add('open');
-    } else {
-      activateChat();
-    }
-
-    openAuthBtn.addEventListener('click', () => { authModal.classList.add('open'); });
+    // فتح واجهة الاسم تلقائياً للمستخدم الجديد
